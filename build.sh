@@ -59,6 +59,9 @@ sed -i.bak '/{page_body}/ {
 rm deploy/index.html.bak
 
 
+rm -rf /Library/WebServer/Documents/*
+cp -rf deploy/* /Library/WebServer/Documents/
+
 
 if [[ $1 = "-c" || $1 = "-d" ]]; then
   echo "Push to trunk"

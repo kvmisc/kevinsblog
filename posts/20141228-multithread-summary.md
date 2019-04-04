@@ -29,42 +29,46 @@ category: ["multithread"]
 
 互斥体不能解决等待的问题，它仅仅解决锁的问题。如果用互斥体来解决上面问题，只能在线程中反复检查。而条件变量可以解决等待问题，在等待条件出现过程中不用耗费任何 CPU 周期。为了防止竞争，条件变量的使用总是和互斥体结合在一起。等待条件出现代码如下：
 
-    void WaitOnCondition()
-    {
-      // 锁定互斥体
-      pthread_mutex_lock(&mutex);
-    
-      // 如果条件已出现，则不用待等待
-      // 如果条件未出现，则线程进入睡眠，直到条件出现
-      while ( ready_to_go==false ) {
-        pthread_cond_wait(&condition, &mutex);
-      }
-    
-      // 处理
-    
-      // 重置条件
-      ready_to_go = false;
-    
-      // 解锁互斥体
-      pthread_mutex_unlock(&mutex);
-    }
+~~~
+void WaitOnCondition()
+{
+  // 锁定互斥体
+  pthread_mutex_lock(&mutex);
+
+  // 如果条件已出现，则不用待等待
+  // 如果条件未出现，则线程进入睡眠，直到条件出现
+  while ( ready_to_go==false ) {
+    pthread_cond_wait(&condition, &mutex);
+  }
+
+  // 处理
+
+  // 重置条件
+  ready_to_go = false;
+
+  // 解锁互斥体
+  pthread_mutex_unlock(&mutex);
+}
+~~~
 
 条件出现代码如下：
 
-    void SignalCondition()
-    {
-      // 锁定互斥体
-      pthread_mutex_lock(&mutex);
-    
-      // 产生条件
-      ready_to_go = true;
-    
-      // 发出条件产生信号
-      pthread_cond_signal(&condition);
-    
-      // 解锁互斥体
-      pthread_mutex_unlock(&mutex);
-    }
+~~~
+void SignalCondition()
+{
+  // 锁定互斥体
+  pthread_mutex_lock(&mutex);
+
+  // 产生条件
+  ready_to_go = true;
+
+  // 发出条件产生信号
+  pthread_cond_signal(&condition);
+
+  // 解锁互斥体
+  pthread_mutex_unlock(&mutex);
+}
+~~~
 
 使用条件变量过程中最难理解的部分是 `pthread_cond_wait()` 函数。等待函数会先解锁互斥体（其它线程才能锁定互斥体并产生条件），然后开始等待，当其它线程产生条件并发出信号时，等待函数并不会立即返回，它会先锁定互斥体再返回。可以看出互斥体在等待函数调用前和返回后都处于锁定状态。
 

@@ -35,8 +35,9 @@ do
   --template templates/post_compact.html \
   --from markdown-auto_identifiers \
   --to html \
+  -o tmp/entry.html \
   --variable=url:posts/${filename}.html \
-  ${item} >tmp/entry.html
+  ${item}
 
   touch tmp/index.html
   cat tmp/index.html>>tmp/entry.html

@@ -23,14 +23,6 @@ do
   -o deploy/posts/${filename}.html \
   ${item}
 
-  # pandoc -s \
-  # --template templates/post_compact.html \
-  # --from markdown-auto_identifiers \
-  # --to html \
-  # -o tmp/${filename}.html \
-  # --variable=url:posts/${filename}.html \
-  # ${item}
-
   pandoc -s \
   --template templates/post_compact.html \
   --from markdown-auto_identifiers \

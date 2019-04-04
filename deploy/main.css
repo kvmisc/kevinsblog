@@ -1,0 +1,78 @@
+
+/* basic */
+body {
+  margin: 0px 0px 0px 0px;
+  padding: 0px 100px 0px 100px;
+  background-color: #212121;
+  font-family: "Roboto", Helvetica, Arial, sans-serif;
+}
+
+header {
+  color: #ffffff;
+  padding: 0px 50px 0px 50px;
+}
+#site_title {
+  margin: 50px 0px 10px 0px;
+  font-size: 54px;
+  font-weight: 700;
+}
+
+#page_body {
+  background-color: #ffffff;
+  color: #373737;
+  padding: 30px 50px 30px 50px;
+}
+.page_body_entry {
+  padding: 10px 0px 10px 0px;
+  min-height: 80px;
+}
+/*.post_title {}*/
+.post_info {
+  color: #999999;
+}
+/*.post_body {}*/
+/*.post_comment {}*/
+
+footer {
+  color: #ffffff;
+  padding: 0px 50px 50px 50px;
+}
+
+/* link */
+a {
+  text-decoration: none;
+  color: inherit;
+  border-bottom: 1px dotted #666666;
+}
+a:hover, a:focus {
+  color: #0090ff;
+}
+
+/* code */
+pre {
+  color: #ffffff;
+  background-color: #222222;
+
+  font-family: Monaco, Terminal, monospace;
+  font-size: 14px;
+
+  padding: 10px 20px 10px 20px;
+  overflow: auto;
+}
+
+/* table */
+table {
+  border: 1px solid #373737;
+  margin-bottom: 20px;
+  text-align: left;
+  border-collapse: collapse;
+}
+th {
+  padding: 10px;
+  background: #222222;
+  color: #ffffff;
+}
+td {
+  padding: 10px;
+  border: 1px solid #222222;
+}

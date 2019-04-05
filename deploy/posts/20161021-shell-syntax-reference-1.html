@@ -1,0 +1,137 @@
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="description" content="kevin's blog for some private ideas.">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" type="text/css" media="screen" href="/main.css">
+<title>SHELL 语法参考（一） - 凯文的博客</title>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+   })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+   ga('create', 'UA-82919702-1', 'auto');
+   ga('send', 'pageview');
+</script>
+</head>
+<body>
+<header>
+<h1 id="site_title"><a href="/">凯文的博客</a></h1>
+</header>
+<div id="page_body">
+<div class="page_body_entry">
+<div class="post_title"><h1>SHELL 语法参考（一）</h1></div>
+<div class="post_info">Kevin Wu · 2016/10/21 · shell</div>
+<div class="post_body">
+<h2>变量</h2>
+<pre><code># 声明变量
+name=&quot;tom&quot;
+
+# 使用变量
+echo $name
+echo ${name}
+
+# 给变量重新赋值
+name=&quot;john&quot;
+echo $name
+
+# 只读变量
+url=&quot;http://www.google.com/&quot;
+readonly url
+url=&quot;http://www.apple.com/&quot;
+
+# 删除变量
+url=&quot;http://www.google.com&quot;
+unset url
+echo $url</code></pre>
+<h2>字符串</h2>
+<p>字符串可以用单引号、双引号，也可以不用引号。单引号里的任何字符都会原样输出，不能出现单独的单引号，转义后也不行；双引号里可以使用变量、转义字符。</p>
+<pre><code># 字符串拼接
+echo &quot;hello &quot;$name&quot;!&quot;
+echo &quot;hello ${name}!&quot;
+echo &#39;hello &#39;$name&#39;!&#39;
+echo &#39;hello ${name}!&#39;
+
+# 字符串长度
+len=${#name}
+echo ${len}
+
+# 提取子字符串
+str=${name:1:2}
+echo ${str}</code></pre>
+<h2>数组</h2>
+<p>Shell 仅支持一维数组，并且没有限定数组大小，初始化时也不需要定义数组大小。</p>
+<pre><code># 数组定义
+names=(Andy Bob Louis)
+
+# 用下标访问数组元素
+echo ${names[0]}
+
+# @ 或 * 作下标可以获取数组中的所有元素
+echo ${names[@]}
+echo ${names[*]}
+
+# 获取数组长度
+echo ${#names[@]}
+echo ${#names[*]}
+
+# 获取单个元素长度
+echo ${#names[2]}
+
+# 遍历数组中所有元素
+for name in ${names[@]}; do
+  echo ${name}
+done</code></pre>
+<h2>运算符</h2>
+<h3>算术运算符</h3>
+<p>Shell 不支持简单的算术运算，但可以用 expr 或 awk 命令来实现，expr 是最常见的选择。expr 表达式的值和运算符之间要有空格，而乘法运算的符号要进行转义才能避免语法错误。</p>
+<pre><code>var=`expr $a + $b`  # 加 23
+var=`expr $a - $b`  # 减 3
+var=`expr $a \* $b` # 乘 130
+var=`expr $a / $b`  # 除 1
+var=`expr $a % $b`  # 模 3</code></pre>
+<h3>关系运算符</h3>
+<p>关系运算只支持数字，不支持字符串，除非字符串的值是数字。</p>
+<pre><code>if [[ $a == $b ]]; then   # 相等
+if [[ $a != $b ]]; then   # 不等
+if [[ $a -eq $b ]]; then  # 相等
+if [[ $a -ne $b ]]; then  # 不等
+if [[ $a -gt $b ]]; then  # 大于
+if [[ $a -lt $b ]]; then  # 小于
+if [[ $a -ge $b ]]; then  # 大于等于
+if [[ $a -le $b ]]; then  # 小于等于</code></pre>
+<h3>字符串运算符</h3>
+<pre><code>if [[ $a = $b ]]; then    # 值相同
+if [[ $a != $b ]]; then   # 不相同
+if [[ -z $a ]]; then      # 长度为0
+if [[ -n $a ]]; then      # 长度非0</code></pre>
+<h3>逻辑运算符</h3>
+<pre><code>if [[ ! $a -gt 100 ]]; then               # 非
+if [[ $a -lt 100 &amp;&amp; $b -gt 100 ]]; then   # 且
+if [[ $a -lt 100 || $b -gt 100 ]]; then   # 或</code></pre>
+<h3>文件测试运算符</h3>
+<pre><code>if [[ -b file ]]; then  # 块设备文件
+if [[ -c file ]]; then  # 字符设备文件
+if [[ -d file ]]; then  # 目录
+if [[ -f file ]]; then  # 普通文件（非目录和设备文件）
+
+if [[ -r file ]]; then  # 可读
+if [[ -w file ]]; then  # 可写
+if [[ -x file ]]; then  # 可执行
+
+if [[ -s file ]]; then  # 文件大小大于 0
+if [[ -e file ]]; then  # 文件或目录存在
+
+if [[ -g file ]]; then  # 是否设置了 SGID 位
+if [[ -u file ]]; then  # 是否设置了 SUID 位
+if [[ -k file ]]; then  # 是否设置了粘着位（Sticky Bit）
+if [[ -p file ]]; then  # 是否是有名管道</code></pre>
+</div>
+</div>
+</div>
+<footer>
+<p>Designed by <a href="mailto:kvmisc@163.com">Kevin Wu</a></p>
+</footer>
+</body>
+</html>

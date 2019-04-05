@@ -1,0 +1,170 @@
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="description" content="kevin's blog for some private ideas.">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" type="text/css" media="screen" href="/main.css">
+<title>SHELL 语法参考（二） - 凯文的博客</title>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+   })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+   ga('create', 'UA-82919702-1', 'auto');
+   ga('send', 'pageview');
+</script>
+</head>
+<body>
+<header>
+<h1 id="site_title"><a href="/">凯文的博客</a></h1>
+</header>
+<div id="page_body">
+<div class="page_body_entry">
+<div class="post_title"><h1>SHELL 语法参考（二）</h1></div>
+<div class="post_info">Kevin Wu · 2016/10/25 · shell</div>
+<div class="post_body">
+<h2>流程控制</h2>
+<h3>if 语句</h3>
+<pre><code>if [[ $a -gt $b ]]; then
+  xxx
+fi
+
+if [[ $a -gt $b ]]; then xxx; fi
+
+if [[ $a -gt $b ]]; then
+  xxx
+else
+  yyy
+fi
+
+if [[ $a -gt $b ]]; then
+  xxx
+elif [[ $a -lt $b ]]; then
+  yyy
+else
+  zzz
+fi</code></pre>
+<h3>for 语句</h3>
+<pre><code># 遍历值集合
+for var in item1 item2 item3; do
+  echo ${var}
+done
+
+# 遍历目录：`ls blog`、blog/*、blog/*.html
+for file in `ls /etc`; do
+  echo ${file}
+done</code></pre>
+<h3>while 语句</h3>
+<pre><code>it=0
+while [[ $it -lt 5 ]]; do
+  echo $it
+  let &quot;it++&quot;
+done</code></pre>
+<h3>untile 语句</h3>
+<p>until 循环执行一系列命令直至条件为 true 才停止，它与 while 循环的处理方式刚好相反，一般 while 循环优于 until 循环，但在某些极少数情况下，until 循环更加有用。</p>
+<pre><code>it=0
+until [[ ! $it -lt 5 ]]; do
+  echo $it
+  it=`expr $it + 1`
+done</code></pre>
+<h3>case 语句</h3>
+<pre><code>type=&quot;bb&quot;
+case $type in
+  aa)
+    echo &quot;aas&quot;
+  ;;
+  bb)
+    echo &quot;bbs&quot;
+  ;;
+  cc)
+    echo &quot;ccs&quot;
+  ;;
+  *)
+    echo &quot;**s&quot;
+  ;;
+esac</code></pre>
+<h3>无限循环</h3>
+<pre><code>while true; do
+  xxx
+done
+
+while :; do
+  xxx
+done
+
+for (( ; ; )); do
+  xxx
+done</code></pre>
+<h3>跳出循环</h3>
+<pre><code># break 跳过所有循环
+while true; do
+  echo -n &quot;Enter number between 1-5:&quot;
+  read num
+  case $num in
+    1|2|3|4|5)
+      echo &quot;The number is: $num&quot;
+    ;;
+    *)
+      echo &quot;Game Over&quot;
+      break
+    ;;
+  esac
+done
+
+# continue 跳过本次循环
+while true; do
+  echo -n &quot;Enter number between 1-5:&quot;
+  read num
+  case $num in
+    1|2|3|4|5)
+      echo &quot;The number is: $num&quot;
+    ;;
+    *)
+      continue
+      echo &quot;Game Over&quot;
+    ;;
+  esac
+done</code></pre>
+<h2>函数</h2>
+<ul>
+<li><code>$#</code> 参数个数（不包括函数名）；</li>
+<li><code>$$</code> 脚本运行的当前进程 ID 号；</li>
+<li><code>$!</code> 后台运行的最后一个进程 ID 号；</li>
+<li><code>$?</code> 最后命令的退出状态；</li>
+<li><code>$-</code> 显示 Shell 使用的当前选项，与 set 命令功能相同；</li>
+<li><code>$*</code> 引用所有参数，被双引号括起来时传递 “1 2 3”（一个参数）；</li>
+<li><code>$@</code> 引用所有参数，被双引号括起来时传递 “1” “2” “3”（三个参数）。</li>
+</ul>
+<pre><code>function func1() {
+  echo &quot;in func1&quot;
+  # 无 return 语句，将以最后一条命令运行结果作为返回值
+}
+
+func2() {
+  echo &quot;in func2&quot;
+  return 101
+}
+
+func3() {
+  echo &quot;arg1: $1&quot;
+  echo &quot;arg2: $2&quot;
+  echo &quot;arg3: $3&quot;
+}
+
+func1
+echo &quot;return code: $?&quot;
+
+func2
+echo &quot;return code: $?&quot;
+
+func3 1 2 3 4 5
+echo &quot;return code: $?&quot;</code></pre>
+</div>
+</div>
+</div>
+<footer>
+<p>Designed by <a href="mailto:kvmisc@163.com">Kevin Wu</a></p>
+</footer>
+</body>
+</html>

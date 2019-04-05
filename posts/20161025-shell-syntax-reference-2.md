@@ -1,5 +1,5 @@
 ---
-title: "SHELL 语法参考（二）"
+title: "Shell 语法参考（二）"
 author: "Kevin Wu"
 date: "2016/10/25"
 category: ["shell", "linux"]

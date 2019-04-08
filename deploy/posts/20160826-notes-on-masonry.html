@@ -1,0 +1,116 @@
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="description" content="kevin's blog for some private ideas.">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" type="text/css" media="screen" href="/main.css">
+<title>Masonry 笔记 - 凯文的博客</title>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+   })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+   ga('create', 'UA-82919702-1', 'auto');
+   ga('send', 'pageview');
+</script>
+</head>
+<body>
+<header>
+<h1 id="site_title"><a href="/">凯文的博客</a></h1>
+</header>
+<div id="page_body">
+<div class="page_body_entry">
+<div class="post_title"><h1>Masonry 笔记</h1></div>
+<div class="post_info">Kevin Wu · 2016/08/26 · ios</div>
+<div class="post_body">
+<h2>固定值与相对值</h2>
+<p>Auto Layout 允许为 width 和 height 设置固定值，而 left、right 或 centerY 这些布局相关的属性却不能设置固定值，如果用 Masonry 给其设置固定值，会被转化为相对于父视图的布局。</p>
+<pre><code>// view.width = 200
+make.width.equalTo(@200);
+
+// view.left = view.superview.left + 10
+make.left.equalTo(@10);</code></pre>
+<h2>混合约束</h2>
+<p>Masonry 可以使用一些简便方法创建多个约束，这被称为混合约束。</p>
+<pre><code>// top, left, bottom, right = superview
+make.edges.equalTo(superview);
+
+// top = superview.top + 5
+// left = superview.left + 10,
+// bottom = superview.bottom - 15
+// right = superview.right - 20
+make.edges.equalTo(superview).insets(UIEdgeInsetsMake(5, 10, 15, 20));
+
+
+// width = superview.width + 100
+// height = superview.height - 50
+make.size.equalTo(superview).sizeOffset(CGSizeMake(100, -50));
+
+
+// centerX, centerY = superview
+make.center.equalTo(superview);
+
+// centerX = superview.centerX - 5
+// centerY = superview.centerY + 10
+make.center.equalTo(superview).centerOffset(CGPointMake(-5, 10));</code></pre>
+<h2>UIScrollView 的使用</h2>
+<p>在 UIScrollView 中顺序排列一些 UIView 并自动计算 contentSize。</p>
+<pre><code>UIView *containerView = [[UIView alloc] init];
+[scrollView addSubview:containerView];
+[containerView mas_makeConstraints:^(MASConstraintMaker *make) {
+  make.edges.equalTo(scrollView);
+  make.width.equalTo(scrollView);
+}];
+
+UIView *prevView = nil;
+for ( NSInteger i=0; i&lt;10; ++i ) {
+  UIView *view = [[UIView alloc] init];
+  view.backgroundColor = [UIColor randColor];
+  [containerView addSubview:view];
+
+  [view mas_makeConstraints:^(MASConstraintMaker *make) {
+    make.top.equalTo(prevView ? prevView.mas_bottom : containerView.mas_top);
+    make.left.equalTo(containerView);
+    make.right.equalTo(containerView);
+    make.height.equalTo(@((i+1)*20));
+  }];
+  prevView = view;
+}
+
+[containerView mas_updateConstraints:^(MASConstraintMaker *make) {
+  make.bottom.equalTo(prevView.mas_bottom);
+}];</code></pre>
+<h2>比例视图</h2>
+<pre><code>// 按照宽三高一且撑满父视图的方式放置视图
+[view mas_makeConstraints:^(MASConstraintMaker *make) {
+  make.width.equalTo(view.mas_height).multipliedBy(3);
+
+  make.width.height.lessThanOrEqualTo(superview);
+  make.width.height.equalTo(superview).priorityLow();
+
+  make.center.equalTo(superview);
+}];</code></pre>
+<h2>数组的操作</h2>
+<p>可以用数组作为参数，也可以对视图数组中所有的视图进行操作。</p>
+<pre><code>[view mas_makeConstraints:^(MASConstraintMaker *make) {
+  make.height.equalTo(@[greenView, blueView]);
+}];
+
+[viewAry updateConstraints:^(MASConstraintMaker *make) {
+  make.baseline.equalTo(superview.mas_centerY).offset(10);
+}];</code></pre>
+<h2>优先级辨析</h2>
+<p>一般讲的优先级是约束的属性，另外，还有抗拉和抗压优先级，它们是控件的属性。有固有尺寸的控件在布局时，抗拉和抗压优先级会与控件其它约束的优先级进行比较，从而得出谁先得到满足。</p>
+<ul>
+<li>Content Hugging Priority 抗拉优先级，数值越高越不容易被拉伸，默认是 251；</li>
+<li>Content Compression Resistance Priority 抗压优先级，数值越高越不容易被压缩，默认是 750。</li>
+</ul>
+</div>
+</div>
+</div>
+<footer>
+<p>Designed by <a href="mailto:kvmisc@163.com">Kevin Wu</a></p>
+</footer>
+</body>
+</html>

@@ -66,5 +66,5 @@ fi
 
 if [[ $1 = "--d" ]]; then
   echo "Publish site"
-#  ssh -p 26687 root@104.36.65.164 'cd /var/www/kevinsblog/ && git pull'
+ssh -p 26615 root@107.148.246.136 'cd /var/www/kevinsblog/ && git pull'
 fi

@@ -2,7 +2,7 @@
 title: "Shell 语法参考（二）"
 author: "Kevin Wu"
 date: "2016/10/25"
-category: ["shell", "linux"]
+category: ["linux"]
 ---
 
 

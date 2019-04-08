@@ -54,7 +54,7 @@ brew install xctool
 WORKSPACE_NAME="GenericProj.xcworkspace"
 SCHEME_NAME="GenericProj"
 BUILD_ROOT="`pwd`/build"
-PACKAGE_NAME="${SCHEME_NAME}-$1-`date +'%m%d%H%M'`"
+PACKAGE_NAME="${SCHEME_NAME}-$1-`date +"%m%d%H%M"`"
 
 if [[ $1 = "debug" ]]; then
 BUILD_SETTING="DAILY_DEBUG=1"

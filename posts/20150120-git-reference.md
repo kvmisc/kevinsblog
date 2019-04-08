@@ -21,7 +21,7 @@ git config --local user.email "xxx"
 
 # 设置 git 记住密码
 git config --global credential.helper cache
-git config --global credential.helper 'cache --timeout=3600'
+git config --global credential.helper "cache --timeout=3600"
 ~~~
 
 ## 分支

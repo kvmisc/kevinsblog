@@ -1,0 +1,125 @@
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="description" content="kevin's blog for some private ideas.">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" type="text/css" media="screen" href="/main.css">
+<title>CocoaPods 用法 - 凯文的博客</title>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+   })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+   ga('create', 'UA-82919702-1', 'auto');
+   ga('send', 'pageview');
+</script>
+</head>
+<body>
+<header>
+<h1 id="site_title"><a href="/">凯文的博客</a></h1>
+</header>
+<div id="page_body">
+<div class="page_body_entry">
+<div class="post_title"><h1>CocoaPods 用法</h1></div>
+<div class="post_info">Kevin Wu · 2014/12/30 · ios</div>
+<div class="post_body">
+<h2>安装</h2>
+<p>CocoaPods 是用 Ruby 实现的，所以使用它需要用到 Ruby 环境。Ruby 的官方软件源使用的是亚马逊的云服务，在国内访问有问题，需要将官方的源替换成国内淘宝提供的源。</p>
+<pre><code># 更新 Ruby 软件源
+gem sources --remove https://rubygems.org/
+gem sources -a http://ruby.taobao.org/
+gem sources -l
+# 淘宝源已不再维护
+gem sources -a http://gems.gzruby.org/
+
+# 安装 CocoaPods
+sudo gem install cocoapods
+pod setup</code></pre>
+<h2>使用</h2>
+<p>CocoaPods 的配置文件叫 Podfile，里面包含依赖库名称、项目平台等信息，在使用 CocoaPods 之前创建此文件，并放到项目的根目录里面，事实上 Podfile 文件可以放到任何目录，这样就需要在 Podfile 文件中增加 xcodeproj 行来指定项目工程文件路径。Podfile 文件的具体规则参见 Podfile 语法参考。</p>
+<p>Podfile 编辑完成后便可开始配置项目，需要注意的是每次修改 Podfile 后都应该对项目进行更新。</p>
+<pre><code># 配置项目，当 Podfile 条目有增删时用
+pod install
+
+# 更新项目，仅仅用于更新条目到新版本
+pod update</code></pre>
+<h2>查找库</h2>
+<p>如果不知道 CocoaPods 管理的库中是否有某库，可以通过搜索命令进行检查。</p>
+<pre><code># 搜索 json 相关的库
+pod search json</code></pre>
+<h2>使用缓存索引</h2>
+<p>CocoaPods 在配置项目和更新项目时，会默认先更新 podspec 索引。可以禁止其更新索引，从而更快完成任务。</p>
+<pre><code># 配置项目（使用缓存索引）
+pod install --no-repo-update
+
+# 更新项目（使用缓存索引）
+pod update --no-repo-update</code></pre>
+<h2>Podfile 语法</h2>
+<p>Podfile 本质上是用来描述 Xcode 工程中 target 的依赖。如果不显式指定 target，Podfile 会隐式地创建一个名为 default 的 target，这个隐式的 target 与工程中第一个 target 相对应。换句话说，如果 Podfile 文件中没有指定 target，那么只有工程里的第一个 target 能够使用 Podfile 中描述的依赖库。</p>
+<p>platform 语句描述静态库编译的平台和版本，支持的平台主要包括移动平台（即 iOS）和桌面平台（即 OS X），目前移动平台默认的编译版本是 4.3，桌面平台是 10.6。</p>
+<pre><code># 编译版本采用默认值 4.3
+platform :ios
+
+# 显示指定编译版本为 5.0
+platform :ios, &#39;5.0&#39;
+
+
+# 使用最新版本
+pod &#39;OpenUDID&#39;
+
+# 使用 0.1 版本
+pod &#39;OpenUDID&#39;, &#39;0.1&#39;
+
+# 使用任何大于 0.1 的版本
+pod &#39;OpenUDID&#39;, &#39;&gt; 0.1&#39;
+
+# 使用任何大于等于 0.1 的版本
+pod &#39;OpenUDID&#39;, &#39;&gt;= 0.1&#39;
+
+# 使用任何小于 0.1 的版本
+pod &#39;OpenUDID&#39;, &#39;&lt; 0.1&#39;
+
+# 使用任何小于等于 0.1 的版本
+pod &#39;OpenUDID&#39;, &#39;&lt;= 0.1&#39;
+
+# 使用任何大于等于 0.1.2 且小于 0.2 的版本
+pod &#39;OpenUDID&#39;, &#39;~&gt; 0.1.2&#39;</code></pre>
+<h2>发布库</h2>
+<h3>发布准备</h3>
+<p>将需要发布的工具库项目托管到 GitHub，修改代码直到功能完善。然后，针对功能完善的代码新建 tag，标签名字为版本号，如 1.0.2。</p>
+<pre><code>git tag -a 1.0.2 -m &quot;Release 1.0.2&quot;
+git push origin --tags</code></pre>
+<h3>注册</h3>
+<p>发布流程的第一步是用邮箱地址注册帐号，这会在当前机器上开启一个新的会话。</p>
+<pre><code>pod trunk register kvmisc@163.com &quot;Kevin Wu&quot; --description=&quot;home&quot; --verbose</code></pre>
+<p>命令中的描述是可选信息，它在用户查看会话列表的时候会有所帮助，列出所有会话可以用 <code>pod trunk me</code>。</p>
+<h3>配置</h3>
+<p>新建一个 podspec 文件，这个文件包含了 pod 所有的配置信息。</p>
+<pre><code>Pod::Spec.new do |s|
+  s.name         = &quot;tapkit&quot;
+  s.version      = &quot;1.0.2&quot;
+  s.summary      = &quot;An Objective-C library for iPhone developers.&quot;
+  s.homepage     = &quot;https://github.com/kvmisc/tapkit&quot;
+  s.license      = &quot;MIT&quot;
+  s.author       = { &quot;Kevin Wu&quot; =&gt; &quot;kvmisc@163.com&quot; }
+  s.social_media_url = &quot;https://twitter.com/kvmisc&quot;
+  s.platform     = :ios, &quot;6.0&quot;
+  s.requires_arc = true
+  s.source       = { :git =&gt; &quot;https://github.com/kvmisc/tapkit.git&quot;, :tag =&gt; s.version.to_s }
+  s.source_files  = &quot;tapkit/*&quot;
+end</code></pre>
+<p>接着验证 podspec 文件的正确性，同时也会验证代码的正确性，代码中的警告会导致验证失败。</p>
+<pre><code>pod lib lint</code></pre>
+<h3>推送</h3>
+<p>podspec 文件验证通过以后，可以直接将 pod 推送到公共仓库中。</p>
+<pre><code>pod trunk push tapkit.podspec</code></pre>
+<p>如果发布成功，<span class="citation" data-cites="CocoaPodsFeed">@CocoaPodsFeed</span> 会在 Twitter 上艾特你。此时可以运行 <code>pod setup</code> 来更新本地 Pods 依赖库，再使用 <code>pod search xxx</code> 来查找刚刚加入的工具库。</p>
+</div>
+</div>
+</div>
+<footer>
+<p>Designed by <a href="mailto:kvmisc@163.com">Kevin Wu</a></p>
+</footer>
+</body>
+</html>

@@ -64,7 +64,7 @@ if [[ $1 = "-c" || $1 = "-d" ]]; then
   git push
 fi
 
-if [[ $1 = "--d" ]]; then
+if [[ $1 = "-d" ]]; then
   echo "Publish site"
 ssh -p 26615 root@107.148.246.136 'cd /var/www/kevinsblog/ && git pull'
 fi

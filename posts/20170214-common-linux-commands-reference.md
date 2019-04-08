@@ -40,13 +40,13 @@ cp -rf source destination
 
 
 # 列出当前目录下的所有目录
-ls -al | grep '^d'
+ls -al | grep "^d"
 
 # 列出当前目录下的所有文件
-ls -al | grep -v '^d'
+ls -al | grep -v "^d"
 
 # 列出其它目录下所有名称中带 sys 的文件或目录
-ls -al /etc/ | grep 'sys'
+ls -al /etc/ | grep "sys"
 ~~~
 
 ## 下载文件

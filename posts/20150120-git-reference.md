@@ -112,6 +112,30 @@ git stash drop
 git stash branch xxx
 ~~~
 
+## 回滚
+
+~~~
+# 删除最后一次提交，并删除这个提交记录
+git reset --hard HEAD^
+git push origin master -f
+
+# 回滚最后一次提交，保留这条提交记录，并增加一条回滚记录
+git revert HEAD
+git push origin master
+
+# 删除中间某次提交，命令输入后，git 会自动打开编辑器，在编辑器中删除对应行，保存退出即可
+git rebase -i 7099f0082bf393e2d5577cb915cdc6c2d6929588^
+git push origin master -f
+
+# 修改中间某次提交，命令输入后，git 会自动打开编辑器，在编辑器中将对应行的 pick 改为 edit，保存退出
+# 此时 rebase 会停在这个提交，然后修改代码或其它，修改完成后将修改追加到这个提交
+git rebase -i 7099f0082bf393e2d5577cb915cdc6c2d6929588^
+git add .
+git commit --amend
+git rebase --continue
+git push origin master -f
+~~~
+
 ## 其它
 
 ~~~

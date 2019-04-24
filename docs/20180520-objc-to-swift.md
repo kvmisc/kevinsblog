@@ -78,14 +78,17 @@ if aaa + 0.1 == 1.2 { // 不相等，不会打印
 let aaa = "111"
 let bbb = 222
 let ccc = "aaa=\(aaa), bbb=\(bbb)"
+
 // 遍历字符串的字符
 let aaa = "111"
 for c: Character in aaa {
   print("'\(c)'")
 }
+
 // 使用 Unicode 标量
 let aaa = "\u{0061}\u{0301}" // 'a' + ' ́'
 let bbb = "\u{00E1}" // 'á'
+
 // 标准等价
 let ccc = (aaa == bbb) // 为真
 // 查看字符串中的 Unicode 标量
@@ -95,15 +98,18 @@ for scalar in aaa.unicodeScalars { // 97 769
 for scalar in bbb.unicodeScalars { // 225
   print("\(scalar.value)")
 }
+
 // 字符串长度
 let ccc = aaa.count; // 1
 let ddd = bbb.count; // 1
+
 // 下标访问字符串
 let aaa = "abcdef"
 let start = aaa.startIndex
 let idx = aaa.index(start, offsetBy: 2);
 let bbb = aaa[idx]
 print(bbb) // c
+
 // 区间访问字符串
 let aaa = "abcdef"
 let start = aaa.startIndex

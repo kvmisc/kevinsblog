@@ -40,13 +40,11 @@ let bbb: Int8 = 50
 //let ccc: Int = aaa + Int16(bbb) // 出错，两个 Int16 类型的结果不会隐式转换为 Int
 let ccc = aaa + Int16(bbb) // 这里 ccc 应该是 Int16 类型
 
-// 负数不能转换为无符号整型
-let aaa: Int = -1
-let bbb: UInt8 = UInt8(aaa) // 出错
-
 // 转换以后超出取值范围的值不能赋值
-let aaa: Int = 256
-let bbb: UInt8 = UInt8(aaa)
+let aaa: Int = 128
+let bbb: Int8 = Int8(aaa) // 出错，Int8 的取值范围是 -128...127
+let ccc: Int = -1
+let ddd: UInt8 = UInt8(ccc) // 出错，UInt8 的取值范围是 0...255
 
 // 不同整型能比较
 let aaa: Int16 = 2
@@ -56,7 +54,7 @@ if aaa == bbb {
 }
 
 
-// 浮点数有 32 位的 Float 和 64 位的 Double，它们的长度差异并不像整型一样影响最大值和最小值，而是影响精度
+// 浮点数有 32 位的 Float 和 64 位的 Double，它们的占位差异并不像整型一样影响最大值和最小值，而是影响精度
 // 浮点数字面量的默认推断类型是 Double
 // 不同浮点型不能比较
 let aaa: Double = 1.1;
@@ -91,6 +89,7 @@ let bbb = "\u{00E1}" // 'á'
 
 // 标准等价
 let ccc = (aaa == bbb) // 为真
+
 // 查看字符串中的 Unicode 标量
 for scalar in aaa.unicodeScalars { // 97 769
   print("\(scalar.value)")
@@ -117,6 +116,22 @@ let idx = aaa.index(start, offsetBy: 2);
 let range = start...idx
 let bbb = aaa[range]
 print(bbb)
+~~~
+
+## 元组
+
+~~~
+let aaa = (404, "Not Found")
+print(aaa.0)
+print(aaa.1)
+
+let aaa = (code:404, info:"Not Found", other:"blah blah")
+print(aaa.code)
+print(aaa.info)
+print(aaa.other)
+print(aaa.0)
+print(aaa.1)
+print(aaa.2)
 ~~~
 
 ## 运算符
@@ -153,15 +168,103 @@ print(bbb=\(bbb))
 
 ## 流程控制
 
+### if 语句
 ~~~
-if aaa < 10 {
-  print("aaa < 10")
+if aaa < 0 {
+  print("aaa < 0")
 }
 
-if aaa < 10 {
+if aaa < 0 {
+  print("aaa < 0")
+} else {
+  print("aaa >= 0")
+}
+
+if aaa < 0 {
+  print("aaa < 0")
+} else if aaa < 10 {
   print("aaa < 10")
 } else {
   print("aaa >= 10")
 }
+
+// 当 switch 语句只有一个分支且不关心 default 分支时，可以用 if case 语句来优雅地替代 switch 语句
+// if case 语句是具备强大模式匹配功能的 if 语句，所以 if case 语句也可以带有 else 块
+// 下例是匹配区间，判断条件相当于 aaa>=0 && aaa<=10
+if case 0...10 = aaa {
+  print("0...10")
+} else {
+  print("other")
+}
 ~~~
+
+### switch 语句
+
+~~~
+// switch 语句必须全覆盖 
+switch aaa {
+case 1: print("1: \(aaa)")
+case 2: print("2: \(aaa)")
+case 3: print("3: \(aaa)")
+default:
+  print("other: \(aaa)")
+}
+
+// 值绑定
+switch aaa {
+case 1: print("1: \(aaa)")
+case 2: print("2: \(aaa)")
+case 3: print("3: \(aaa)")
+case let bbb: // let 可以换成 var；bbb 的值会被设为 aaa，用 default 能达到同样的效果，值绑定在这里并没有什么用
+  print("bbb: \(bbb) \(aaa)")
+}
+
+// 在 C 语言中，如果不在每个 case 里包含 break 语句，当匹配到某个 case 后，会依次执行这个 case 后面的 case
+// swift 中正好相反，默认是不漏下去的，如果要漏下去，要在 case 里面用 fallthrough 语句
+switch aaa {
+case 1:
+  print("1: \(aaa)")
+  fallthrough
+case 2:
+  print("2: \(aaa)")
+  fallthrough
+case 3:
+  print("3: \(aaa)")
+default:
+  print("other: \(aaa)")
+}
+
+// 匹配
+switch aaa {
+case 0: print("0: \(aaa)") // 匹配单个值
+case 1,2,3: print("1,2,3: \(aaa)") // 匹配多个值
+case 4...9: print("4...9: \(aaa)") // 匹配区间
+default:
+  print("other: \(aaa)")
+}
+// 匹配元组
+let aaa = (401, 401)
+switch aaa {
+case (404, 404): print("(404, 404)")
+case (404, _): print("(404, _)")
+case (_, 404): print("(_, 404)")
+default:
+  print("(other, other)")
+}
+
+// 筛选条件
+// 第三个 case 和第四个 case 有重叠，当 aaa 等于 3 时，执行先匹配的 case
+switch aaa {
+case 1: print("1: \(aaa)")
+case 2: print("2: \(aaa)")
+case 3: print("3: \(aaa)")
+case let bbb where aaa>2 && aaa<10: print("bbb: \(bbb)")
+default:
+  print("other: \(aaa)")
+}
+~~~
+
+
+
+
 

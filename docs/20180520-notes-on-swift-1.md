@@ -1,5 +1,5 @@
 ---
-title: "从 Objective-C 到 Swift"
+title: "Swift 笔记（一）"
 author: "Kevin Wu"
 date: "2017/05/20"
 category: ["swift"]
@@ -137,22 +137,27 @@ print(aaa.2)
 ## 运算符
 
 ~~~
-// 比较运算符
-<   计算左边的值是否小于右边的值
-<=  计算左边的值是否小于等于右边的值
->   计算左边的值是否大于右边的值
->=  计算左边的值是否大于等于右边的值
-==  计算左边的值是否等于右边的值
-!=  计算左边的值是否不等于右边的值
-=== 计算两个实例是否指向同一个引用
-!== 计算两个实例是否不指向同一个引用
+// 算术运算符
++ 加法
+- 减法
+* 乘法
+/ 整数除法
+% 取模
+
+// 关系运算符
+<   小于
+<=  小于等于
+>   大于
+>=  大于等于
+==  等于
+!=  不等于
+=== 两个实例是否指向同一个引用
+!== 两个实例是否不指向同一个引用
 
 // 逻辑运算符
 && 逻辑与，当且仅当两者都为真时结果为真
 || 逻辑或，两者任意一个为真时结果为真
 !  逻辑非，真变为假，假变为真
-
-
 
 
 // 整数除法总是向 0 舍入
@@ -161,12 +166,51 @@ print(-11 / 3) // -3
 
 // 溢出运算符
 let aaa: Int8 = 120
-//let bbb = aaa + 10
+//let bbb = aaa + 10 // 出错，超出取值范围
 let bbb = aaa &+ 10
-print(bbb=\(bbb))
+print("bbb=\(bbb)")
 ~~~
 
 ## 流程控制
+
+### for 循环
+
+~~~
+for i in 0...5 {
+  print(i)
+}
+
+// 忽略迭代器
+for _ in 0...5 {
+  print("aaa")
+}
+
+// 判断条件，相当于在循环内写一个 if 语句
+for i in 0...5 where i % 2 == 0 {
+  print(i)
+}
+~~~
+
+### while 循环
+
+~~~
+var i = 0
+while i < 6 {
+  print(i)
+  i += 1
+}
+~~~
+
+### repeat-while 循环
+
+~~~
+// 就算条件为假，也会执行一次
+var i = 0
+repeat {
+  print(i)
+  i += 1
+} while i < 6
+~~~
 
 ### if 语句
 ~~~
@@ -219,21 +263,6 @@ case let bbb: // let 可以换成 var；bbb 的值会被设为 aaa，用 default
   print("bbb: \(bbb) \(aaa)")
 }
 
-// 在 C 语言中，如果不在每个 case 里包含 break 语句，当匹配到某个 case 后，会依次执行这个 case 后面的 case
-// swift 中正好相反，默认是不漏下去的，如果要漏下去，要在 case 里面用 fallthrough 语句
-switch aaa {
-case 1:
-  print("1: \(aaa)")
-  fallthrough
-case 2:
-  print("2: \(aaa)")
-  fallthrough
-case 3:
-  print("3: \(aaa)")
-default:
-  print("other: \(aaa)")
-}
-
 // 匹配
 switch aaa {
 case 0: print("0: \(aaa)") // 匹配单个值
@@ -264,7 +293,26 @@ default:
 }
 ~~~
 
+### 控制转移语句
 
+~~~
+// 在 C 语言中，如果不在 switch 语句的每个 case 里包含 break 语句，当匹配到某个 case 后，会依次执行这个 case 后面的 case
+// swift 中正好相反，默认是不漏下去的，如果要漏下去，要在 case 里面用 fallthrough 语句
+switch aaa {
+case 1:
+  print("1: \(aaa)")
+  fallthrough
+case 2:
+  print("2: \(aaa)")
+  fallthrough
+case 3:
+  print("3: \(aaa)")
+default:
+  print("other: \(aaa)")
+}
+
+// swift 中 continue 和 break 的用法与 C 语言是一样的
+~~~
 
 
 

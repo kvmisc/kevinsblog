@@ -1,5 +1,5 @@
 ---
-title: "Swift 笔记（一）"
+title: "Swift 笔记（一）：语言基础"
 author: "Kevin Wu"
 date: "2017/05/20"
 category: ["swift"]
@@ -116,59 +116,6 @@ let idx = aaa.index(start, offsetBy: 2);
 let range = start...idx
 let bbb = aaa[range]
 print(bbb)
-~~~
-
-## 元组
-
-~~~
-let aaa = (404, "Not Found")
-print(aaa.0)
-print(aaa.1)
-
-let aaa = (code:404, info:"Not Found", other:"blah blah")
-print(aaa.code)
-print(aaa.info)
-print(aaa.other)
-print(aaa.0)
-print(aaa.1)
-print(aaa.2)
-~~~
-
-## 运算符
-
-~~~
-// 算术运算符
-+ 加法
-- 减法
-* 乘法
-/ 整数除法
-% 取模
-
-// 关系运算符
-<   小于
-<=  小于等于
->   大于
->=  大于等于
-==  等于
-!=  不等于
-=== 两个实例是否指向同一个引用
-!== 两个实例是否不指向同一个引用
-
-// 逻辑运算符
-&& 逻辑与，当且仅当两者都为真时结果为真
-|| 逻辑或，两者任意一个为真时结果为真
-!  逻辑非，真变为假，假变为真
-
-
-// 整数除法总是向 0 舍入
-print(11 / 3)  // 3
-print(-11 / 3) // -3
-
-// 溢出运算符
-let aaa: Int8 = 120
-let bbb = aaa + 10 // 出错，超出取值范围
-let ccc = aaa &+ 10
-print("ccc=\(ccc)") // ccc=-126
 ~~~
 
 ## 流程控制
@@ -313,6 +260,3 @@ default:
 
 // swift 中 continue 和 break 的用法与 C 语言是一样的
 ~~~
-
-
-

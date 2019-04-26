@@ -1,10 +1,25 @@
 ---
-title: "Swift 笔记（二）"
+title: "Swift 笔记（二）：高级对象"
 author: "Kevin Wu"
 date: "2017/05/23"
 category: ["swift"]
 ---
 
+
+## 元组
+
+~~~
+// 无名元组
+let aaa = (404, "Not Found")
+print(aaa.0)
+print(aaa.1)
+
+// 有名元组，也可以用下标访问
+let aaa = (code:404, info:"Not Found", other:"blah blah")
+print(aaa.code)
+print(aaa.info)
+print(aaa.other)
+~~~
 
 ## 可空类型
 
@@ -218,10 +233,3 @@ print(ccc) // ["222", "111", "444"]
 // 不相交
 print(aaa.isDisjoint(with: bbb)) // false，aaa 和 bbb 有相同的元素，它们是相交的
 ~~~
-
-
-
-
-
-
-

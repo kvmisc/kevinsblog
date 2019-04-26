@@ -1,0 +1,213 @@
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="description" content="kevin's blog for some private ideas.">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" type="text/css" media="screen" href="/main.css">
+<title>Swift 笔记（三）：函数和闭包 - 凯文的博客</title>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+   })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+   ga('create', 'UA-82919702-1', 'auto');
+   ga('send', 'pageview');
+</script>
+</head>
+<body>
+<header>
+<h1 id="site_title"><a href="/">凯文的博客</a></h1>
+</header>
+<div id="page_body">
+<div class="page_body_entry">
+<div class="post_title"><h1>Swift 笔记（三）：函数和闭包</h1></div>
+<div class="post_info">Kevin Wu · 2017/05/26 · swift</div>
+<div class="post_body">
+<h2>函数</h2>
+<h3>函数参数</h3>
+<pre><code>// 无参数
+func aaa() {
+  print(&quot;111&quot;)
+}
+aaa()
+
+// 有参数
+func bbb(name: String) {
+  print(&quot;name: \(name)&quot;)
+}
+bbb(name: &quot;tony&quot;)
+
+// label 参数
+func ccc(label name: String) {
+  print(&quot;name: \(name)&quot;)
+}
+ccc(label: &quot;tony&quot;)
+
+// 默认参数
+func ddd(name: String = &quot;unknown&quot;) {
+  print(&quot;name: \(name)&quot;)
+}
+ddd()
+ddd(name: &quot;tony&quot;)
+
+// inout 参数
+func eee(name: String, error: inout String) {
+  print(&quot;name: \(name)&quot;)
+  error = &quot;error occurred&quot;
+}
+var err = &quot;&quot;
+eee(name: &quot;tony&quot;, error: &amp;err)
+print(err)
+
+// 变长参数
+func fff(names: String...) {
+  for name in names {
+    print(name)
+  }
+}
+fff(names: &quot;tony&quot;, &quot;bill&quot;)
+
+// 函数参数
+func ggg(budget: Int, condition: (Int) -&gt; Bool) {
+  if condition(budget) {
+    print(&quot;111&quot;)
+  } else {
+    print(&quot;222&quot;)
+  }
+}
+func evaluate(value: Int) -&gt; Bool {
+  return (value&gt;10)
+}
+ggg(budget: 8, condition: evaluate)</code></pre>
+<h3>函数返回值</h3>
+<pre><code>// 返回元组
+func aaa() -&gt; (ta: Int, tb: String) {
+  return (404, &quot;Not Found&quot;)
+}
+var result = aaa()
+print(&quot;(\(result.ta), \(result.tb))&quot;) // (404, Not Found)
+
+// 返回可空类型
+func bbb() -&gt; String? {
+  return &quot;blah blah&quot;
+}
+var result = bbb()
+print(result) // Optional(&quot;blah blah&quot;)
+
+// 返回函数
+func ccc() -&gt; (Int, Int) -&gt; Int {
+  func ddd(a: Int, b: Int) -&gt; Int {
+    return (a+b)
+  }
+  return ddd
+}
+let result: (Int, Int) -&gt; Int = ccc()
+let value = result(1, 2)
+print(value) // 3</code></pre>
+<h3>嵌套函数</h3>
+<pre><code>func aaa() -&gt; Int {
+  var number = 3
+
+  func double() -&gt; Int {
+    return number * 2
+  }
+
+  return double()
+}
+var result = aaa()
+print(result)</code></pre>
+<h3>guard 语句</h3>
+<pre><code>func aaa(value: String?) {
+  guard let name = value else {
+    print(&quot;No Name&quot;)
+    return
+  }
+  print(&quot;name: \(name)&quot;)
+}
+var name: String?
+name = &quot;tony&quot;
+aaa(value: name)</code></pre>
+<h2>闭包</h2>
+<h3>基本用法</h3>
+<pre><code>// 闭包语法
+{ (parameters) -&gt; returnType in
+  // code
+}
+
+// 闭包用法
+// 数据准备
+var aaa = [1, 3, 40, 32, 2, 53, 77, 13]
+print(aaa)
+// 使用闭包
+aaa.sort(by: { (a: Int, b: Int) -&gt; Bool in
+  return (a&lt;b)
+})
+print(aaa)
+// 简化闭包，使用类型推断简化，省略参数类型、返回类型、return 关键字。
+// 如果只有一个表达式，可以省略 return，如果有多个表达式，显式 return 是必需的
+aaa.sort(by: { a, b in a&lt;b })
+print(aaa)
+// 简化闭包
+aaa.sort(by: { $0&lt;$1 })
+print(aaa)
+// 简化闭包，如果闭包是函数的最后一个参数，这闭包可以在括号外内联
+aaa.sort { $0&lt;$1 }
+print(aaa)</code></pre>
+<h3>捕获变量</h3>
+<pre><code>func aaa(count: Int) -&gt; (Int) -&gt; Int {
+  var total = count
+  func bbb(value: Int) -&gt; Int {
+    total += value
+    return total
+  }
+  return bbb
+}
+var number1 = 100
+let result1: (Int) -&gt; Int = aaa(count: number1)
+result1(1)
+print(number1) // 100
+number1 = result1(2)
+print(number1) // 103
+
+let result2 = result1
+result2(3)
+print(number1) // 103
+number1 = result2(4)
+print(number1) // 110
+
+var number3 = 200
+let result3: (Int) -&gt; Int = aaa(count: number3)
+result3(1)
+print(number3) // 200
+number3 = result3(2)
+print(number3) // 203</code></pre>
+<h3>高阶函数</h3>
+<pre><code>// 转换（map）
+let aaa = [8, 2, 5]
+let bbb = aaa.map { (value: Int) -&gt; Int in
+  return (value*2)
+}
+print(bbb) // [16, 4, 10]
+
+// 过滤（filter）
+let aaa = [8, 2, 5]
+let bbb = aaa.filter { (value: Int) -&gt; Bool in
+  return (value&gt;=5)
+}
+print(bbb) // [8, 5]
+
+// 累积（reduce）
+let aaa = [8, 2, 5]
+let bbb = aaa.reduce(0) { (result: Int, value: Int) -&gt; Int in
+  return (result+value)
+}
+print(bbb) // 15</code></pre>
+</div>
+</div>
+</div>
+<footer>
+<p>Designed by <a href="mailto:kvmisc@163.com">Kevin Wu</a></p>
+</footer>
+</body>
+</html>

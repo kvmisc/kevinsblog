@@ -22,8 +22,8 @@ let aaa = 5
 // 整数字面量的默认推断类型是 Int
 let aaa = 5
 // 类型注解（type annotation），显式地声明变量是整数类型
-let aaa: Int = 5
-let aaa: Int = "5" // 出错，虽然有类型注解，也不代表编译器不关注等号两边的真实类型
+let bbb: Int = 5
+let ccc: Int = "5" // 出错，虽然有类型注解，也不代表编译器不关注等号两边的真实类型
 
 // 未初始化的变量
 let aaa: Int
@@ -31,14 +31,14 @@ print(aaa) // 出错
 
 // 不能给变量赋超出范围的值
 let aaa: Int8 = 128 // 出错，Int8 的取值范围是 -128...127
-let aaa: UInt8 = -1 // 出错，UInt8 的取值范围是 0...255
+let bbb: UInt8 = -1 // 出错，UInt8 的取值范围是 0...255
 
 // 转换整数类型
 let aaa: Int16 = 200
 let bbb: Int8 = 50
-//let ccc = aaa + bbb // 出错，bbb 不会隐式转换为 Int16，类型不同，不能相加
-//let ccc: Int = aaa + Int16(bbb) // 出错，两个 Int16 类型的结果不会隐式转换为 Int
-let ccc = aaa + Int16(bbb) // 这里 ccc 应该是 Int16 类型
+let ccc = aaa + bbb // 出错，bbb 不会隐式转换为 Int16，类型不同，不能相加
+let ddd: Int = aaa + Int16(bbb) // 出错，两个 Int16 类型的结果不会隐式转换为 Int
+let eee = aaa + Int16(bbb) // 这里 eee 应该是 Int16 类型
 
 // 转换以后超出取值范围的值不能赋值
 let aaa: Int = 128
@@ -166,9 +166,9 @@ print(-11 / 3) // -3
 
 // 溢出运算符
 let aaa: Int8 = 120
-//let bbb = aaa + 10 // 出错，超出取值范围
-let bbb = aaa &+ 10
-print("bbb=\(bbb)")
+let bbb = aaa + 10 // 出错，超出取值范围
+let ccc = aaa &+ 10
+print("ccc=\(ccc)") // ccc=-126
 ~~~
 
 ## 流程控制

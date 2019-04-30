@@ -10,9 +10,9 @@ category: ["swift"]
 
 ~~~
 // 变量
-var va = 5
+var va = 5, vb = 5.0, vc = "111"
 // 常量
-let vb = 5
+let vd = 5
 
 // 观察全局变量
 var ga = 0 {

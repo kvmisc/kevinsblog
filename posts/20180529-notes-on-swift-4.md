@@ -182,6 +182,21 @@ if var terrorTown = town {
 }
 ~~~
 
+### 结构体和类常量
+
+~~~
+struct Stt {
+  var value = 0
+}
+class Cls {
+  var value = 0
+}
+let va = Stt()
+va.value = 101 // 编译出错
+let vb = Cls()
+vb.value = 101
+~~~
+
 ### mutating 本质
 
 ~~~
@@ -208,3 +223,39 @@ changeTo("John", "Gallagher") // TODO: 这里会导致函数体内 EXE_BAD_ACCES
 print("\(person.firstName) \(person.lastName)")
 ~~~
 
+### 初始化
+
+#### 结构体初始化
+
+~~~
+// 编译器提供的初始化方法
+struct Town {
+  var population: Int
+  var stoplights: Int = 0
+}
+// 默认初始化方法，如果结构体的每个存储属性都有默认值，可以用结构体的默认初始化方法
+var va = Town() // 编译错误，population 没有默认值，不能用默初始化方法
+// 成员初始化方法
+var vb = Town(population: 0) // 编译错误，虽然 stoplights 有默认值，也要传
+var vc = Town(stoplights: 0, population: 0) // 编译错误，顺序也不能乱
+var vd = Town(population: 0, stoplights: 0)
+
+// 自定义初始化方法，如果提供自定义初始化方法，编译器就不再提供初始化方法
+struct Town {
+  var population: Int
+  var stoplights: Int
+  let region: String
+  init(region: String, population: Int, lights: Int) { // label 可以随意命名；顺序可以随意排；
+    self.population = population // 参数名与属性名相同，必须用 self
+    stoplights = lights // 参数名与属性名不同，可以不用 self
+    self.region = region
+  }
+  init(population: Int, lights: Int) {
+    self.init(region: "N/A", population: population, lights: lights)
+  }
+}
+var va = Town(population: 0, stoplights: 0, region: "") // 编译错误，编译器提供的初始化方法已经不存在了
+var vb = Town(region: "", population: 0, lights: 0)
+vb.region = "South" // 编译出错，region 是常量
+var vc = Town(population: 0, lights: 0)
+~~~

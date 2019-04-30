@@ -13,6 +13,24 @@ category: ["swift"]
 var va = 5
 // 常量
 let vb = 5
+
+// 观察全局变量
+var ga = 0 {
+  willSet { print("Global WillSet: \(newValue)") }
+  didSet { print("Global DidSet: \(oldValue)") }
+}
+ga = 1
+ga = 2
+
+// 观察本地变量
+func fa() {
+  var la = 0 {
+    willSet { print("Local WillSet: \(newValue)") }
+    didSet { print("Local DidSet: \(oldValue)") }
+  }
+  la = 1
+  la = 2
+}
 ~~~
 
 ## 数

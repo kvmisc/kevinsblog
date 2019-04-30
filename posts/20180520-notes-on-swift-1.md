@@ -10,33 +10,33 @@ category: ["swift"]
 
 ~~~
 // 变量
-var aaa = 5
+var va = 5
 // 常量
-let aaa = 5
+let vb = 5
 ~~~
 
 ## 数
 
 ~~~
-// 类型推断（type inference），赋给变量的值是整数，推断 aaa 为整数类型
+// 类型推断（type inference），赋给变量的值是整数，推断 va 为整数类型
 // 整数字面量的默认推断类型是 Int
-let aaa = 5
+let va = 5
 // 类型注解（type annotation），显式地声明变量是整数类型
-let bbb: Int = 5
-let ccc: Int = "5" // 出错，虽然有类型注解，也不代表编译器不关注等号两边的真实类型
+let vb: Int = 5
+let vc: Int = "5" // 出错，虽然有类型注解，也不代表编译器不关注等号两边的真实类型
 
 // 未初始化的变量
-let aaa: Int
-print(aaa) // 出错
+let va: Int
+print(va) // 出错
 
 // 不能给变量赋超出范围的值
-let aaa: Int8 = 128 // 出错，Int8 的取值范围是 -128...127
-let bbb: UInt8 = -1 // 出错，UInt8 的取值范围是 0...255
+let va: Int8 = 128 // 出错，Int8 的取值范围是 -128...127
+let vb: UInt8 = -1 // 出错，UInt8 的取值范围是 0...255
 
 // 转换整数类型
-let aaa: Int16 = 200
-let bbb: Int8 = 50
-let ccc = aaa + bbb // 出错，bbb 不会隐式转换为 Int16，类型不同，不能相加
+let va: Int16 = 200
+let vb: Int8 = 50
+let vc = va + vb // vb 不会隐式转换为 Int16，类型不同，不能相加
 let ddd: Int = aaa + Int16(bbb) // 出错，两个 Int16 类型的结果不会隐式转换为 Int
 let eee = aaa + Int16(bbb) // 这里 eee 应该是 Int16 类型
 

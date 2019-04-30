@@ -23,28 +23,28 @@ let vb = 5
 var va = 5
 // 类型注解（type annotation），显式地声明变量是整数类型
 var vb: Int = 5
-var vc: Int = "5" // 出错，虽然有类型注解，也不代表编译器不关注等号两边的真实类型
+var vc: Int = "5" // 编译错误，虽然有类型注解，也不代表编译器不关注等号两边的真实类型
 
 // 未初始化的变量
 var va: Int
-print(va) // 出错
+print(va) // 编译错误
 
 // 不能给变量赋超出范围的值
-var va: Int8 = 128 // 出错，Int8 的取值范围是 -128...127
-var vb: UInt8 = -1 // 出错，UInt8 的取值范围是 0...255
+var va: Int8 = 128 // 编译错误，Int8 的取值范围是 -128...127
+var vb: UInt8 = -1 // 编译错误，UInt8 的取值范围是 0...255
 
 // 转换整数类型
 var va: Int16 = 200
 var vb: Int8 = 50
-var vc = va + vb // 出错，vb 不会隐式转换为 Int16，类型不同，不能相加
-var vd: Int = va + Int16(vb) // 出错，两个 Int16 类型的运算结果不会隐式转换为 Int
+var vc = va + vb // 编译错误，vb 不会隐式转换为 Int16，类型不同，不能相加
+var vd: Int = va + Int16(vb) // 编译错误，两个 Int16 类型的运算结果不会隐式转换为 Int
 var ve = va + Int16(vb) // ve 没有显式指定类型，这里应该推断出 ve 是 Int16 类型
 
 // 转换以后超出取值范围的值不能赋值
 var va: Int = 128
-var vb: Int8 = Int8(va) // 出错，Int8 的取值范围是 -128...127
+var vb: Int8 = Int8(va) // 运行时崩溃，Int8 的取值范围是 -128...127
 var vc: Int = -1
-var vd: UInt8 = UInt8(vc) // 出错，UInt8 的取值范围是 0...255
+var vd: UInt8 = UInt8(vc) // 运行时崩溃，UInt8 的取值范围是 0...255
 
 // 不同整型能比较
 var va: Int16 = 2
@@ -57,7 +57,7 @@ print(va == vb) // true
 // 不同浮点型不能比较
 var va: Double = 1.1;
 var vb: Float = 1.1;
-print(va == vb) // 出错
+print(va == vb) // 编译错误
 
 // 判断浮点数是否相等不能直接比较，要用特殊方法
 var va: Double = 1.1
@@ -214,7 +214,7 @@ default:
   print("other: \(va)")
 }
 // 匹配元组
-let va = (401, 401)
+var va = (401, 401)
 switch va {
 case (404, 404): print("(404, 404)")
 case (404, _): print("(404, _)")

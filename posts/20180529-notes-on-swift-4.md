@@ -235,7 +235,7 @@ struct Town {
 }
 // 默认初始化方法，如果结构体的每个存储属性都有默认值，可以用结构体的默认初始化方法
 var va = Town() // 编译错误，population 没有默认值，不能用默初始化方法
-// 成员初始化方法
+// 默认成员初始化方法
 var vb = Town(population: 0) // 编译错误，虽然 stoplights 有默认值，也要传
 var vc = Town(stoplights: 0, population: 0) // 编译错误，顺序也不能乱
 var vd = Town(population: 0, stoplights: 0)
@@ -258,4 +258,20 @@ var va = Town(population: 0, stoplights: 0, region: "") // 编译错误，编译
 var vb = Town(region: "", population: 0, lights: 0)
 vb.region = "South" // 编译出错，region 是常量
 var vc = Town(population: 0, lights: 0)
+~~~
+
+#### 类初始化
+
+~~~
+// 编译器提供的初始化方法
+class Monster {
+  var population: Int = 0
+  var stoplights: Int = 0
+  var computedProperty: Int { return 5 }
+}
+// 默认初始化方法
+// 当类的所有存储属性都有默认值的时候，可以调用这个方法
+// 当类的部分存储属性没有默认值，且没有提供自定义初始化方法的时候，编译错误
+var va = Monster()
+// 类没有默认成员初始化方法
 ~~~

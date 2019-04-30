@@ -1,5 +1,5 @@
 ---
-title: "Swift 笔记（一）：语言基础"
+title: "《Swift 编程权威指南》笔记（一）：语言基础"
 author: "Kevin Wu"
 date: "2017/05/20"
 category: ["swift"]

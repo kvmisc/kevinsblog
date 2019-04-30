@@ -1,5 +1,5 @@
 ---
-title: "Swift 笔记（二）：高级对象"
+title: "《Swift 编程权威指南》笔记（二）：高级对象"
 author: "Kevin Wu"
 date: "2017/05/23"
 category: ["swift"]

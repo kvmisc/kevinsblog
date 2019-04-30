@@ -1,5 +1,5 @@
 ---
-title: "Swift 笔记（四）：函数和闭包"
+title: "《Swift 编程权威指南》笔记（四）：枚举、结构体和类"
 author: "Kevin Wu"
 date: "2017/05/29"
 category: ["swift"]
@@ -18,23 +18,26 @@ enum TextAlignment {
 }
 
 // 使用枚举
-var aaa: TextAlignment = TextAlignment.center
-var bbb = TextAlignment.center
-bbb = .left // bbb 已经确定为某个枚举类型，赋值时可以省略枚举名
+var va: TextAlignment = TextAlignment.center
+var vb: TextAlignment = .center
+var vc = TextAlignment.center
+var vd = .center // 编译错误，推断不出类型
+
+va = .left // va 已经确定为某个枚举类型，重新赋值时可以省略枚举名
 
 // 比较枚举
-if bbb == .right {
+if va == .right {
   print("right")
 }
 
 // switch 枚举
-switch aaa {
+switch va {
 case .left:
   print("left")
-case .right:
-  print("right")
 case .center:
   print("center")
+case .right:
+  print("right")
 }
 ~~~
 
@@ -47,32 +50,36 @@ enum TextAlignment: Int {
   case center
   case right
 }
+print(va.rawValue) // 1
 print(TextAlignment.right.rawValue) // 2
 
 // 指定原始值
 enum TextAlignment: Int {
-  case left = 0
-  case center = 10
-  case right = 20
+  case left = 10
+  case center = 20
+  case right = 30
 }
-print(TextAlignment.right.rawValue) // 20
+print(va.rawValue) // 20
+print(TextAlignment.right.rawValue) // 30
 
 // 原始值转枚举
-let aaa = 10
-let bbb = TextAlignment(rawValue: aaa)
-print(bbb) // Optional(TestSwift.TextAlignment.center)
-if let ccc = TextAlignment(rawValue: aaa) {
-  print(ccc) // center
+var va = 20
+
+var vb = TextAlignment(rawValue: va)
+print(vb) // Optional(TestSwift.TextAlignment.center)
+
+if var vc = TextAlignment(rawValue: va) {
+  print(vc) // center
 }
 
-// 字符串原始值，center 使用自身名字作为原始值
+// 字符串原始值
 enum TextAlignment: String {
   case left = "Left"
-  case center
+  case center // center 使用自身名字作为原始值
   case right = "Right"
 }
-var aaa: TextAlignment = TextAlignment.left
-print("\(aaa): \(aaa.rawValue)") // left: Left
+var va = TextAlignment.left
+print("\(va): \(va.rawValue)") // left: Left
 ~~~
 
 ### 方法
@@ -103,10 +110,10 @@ enum TextAlignment {
     }
   }
 }
-var aaa = TextAlignment.right
-print(aaa.intValue()) // 10
-aaa.toNext()
-print(aaa.intValue()) // 20
+var va = TextAlignment.right
+print(va.intValue()) // 30
+va.toNext()
+print(va.intValue()) // 10
 ~~~
 
 ### 关联值
@@ -118,21 +125,21 @@ enum Shape {
   case point
   func area() -> Double {
     switch self {
-    case let .square(side: side):
-      return side * side
-    case let .rectangle(width: width, height: height):
-      return width * height
+    case var .square(side: s):
+      return s * s
+    case var .rectangle(width: w, height: h):
+      return w * h
     case .point:
       return 0
     }
   }
 }
-var aaa = Shape.square(side: 10)
-print(aaa.area()) // 100.0
-var bbb = Shape.rectangle(width: 10, height: 20)
-print(bbb.area()) // 200.0
-var ccc = Shape.point
-print(ccc.area()) // 0.0
+var va = Shape.square(side: 10)
+print(va.area()) // 100.0
+var vb = Shape.rectangle(width: 10, height: 20)
+print(vb.area()) // 200.0
+var vc = Shape.point
+print(vc.area()) // 0.0
 ~~~
 
 ### 递归枚举
@@ -144,29 +151,34 @@ indirect enum FamilyTree {
   case twoKnownParents(fatherName: String, fatherAncestors: FamilyTree,
                       motherName: String, motherAncestors: FamilyTree)
 }
-let aaa = FamilyTree.twoKnownParents(fatherName: "Fred Sr.",
-                                     fatherAncestors: .oneKnownParent(name: "Beth", ancestors: .noKnownParents),
-                                     motherName: "Marsha",
-                                     motherAncestors: .noKnownParents)
+var va = FamilyTree.twoKnownParents(fatherName: "Fred Sr.",
+                                    fatherAncestors: .oneKnownParent(name: "Beth", ancestors: .noKnownParents),
+                                    motherName: "Marsha",
+                                    motherAncestors: .noKnownParents)
 ~~~
 
 ## 结构体和类
 
 ### 值类型传递
 ~~~
-// town 为可空结构体，这里会修改 town
-if town != nil {
-  town?.updatePopulation(by: -10)
-  print("\(name) make population -10")
-} else {
-  print("\(name) did nothing")
+struct Town {
+  var population = 100
+
+  mutating func changePopulation(by: Int) {
+    self.population += by
+  }
 }
-// town 为可空结构体，terrorTown 复制了 town，这里修改的是 terrorTown，town 不会被修改
+
+// town 为可空结构体
+var town: Town? = Town()
+
+// 这里会修改 town.population 的值
+if town != nil {
+  town?.changePopulation(by: -10)
+}
+// terrorTown 复制了 town，这里修改的是 terrorTown.population，town.population 不会被修改
 if var terrorTown = town {
-  terrorTown.updatePopulation(by: -10)
-  print("\(name) make population -10")
-} else {
-  print("\(name) did nothing")
+  terrorTown.changePopulation(by: -10)
 }
 ~~~
 
@@ -182,17 +194,17 @@ struct Person {
   }
 }
 var person = Person()
-let changeName = Person.changeTo
-// 按住 Option 键点击 changeName，能显示出 changeName 的定义：
+var fChangeTo = Person.changeTo
+// 按住 Option 键点击 fChangeTo，能显示出 fChangeTo 的定义：
 // 有 mutating
-//   let changeName: (inout Person) -> (String, String) -> ()
+//   var fChangeTo: (inout Person) -> (String, String) -> ()
 // 无 mutating
-//   let changeName: (      Person) -> (String, String) -> ()
+//   var fChangeTo: (      Person) -> (String, String) -> ()
 // 两种情况都是接受 Person 实例作为参数，返回一个函数，只不过 mutating 的情况下参数是 inout 形式
 // 总结起来：mutating 方法的第一个参数是 self，并以 inout 的形式传入。因为值类型在传递的时候会被复制，所以
 // 对于非 mutating 方法，self 其实是个副本，为了进行修改，self 需要被声明为 inout。
-let changeNameFromMattTo = changeName(&person)
-changeNameFromMattTo("John", "Gallagher") // 这里调用会导致函数体内 EXE_BAD_ACCESS，不清楚为何
+var changeTo = fChangeTo(&person)
+changeTo("John", "Gallagher") // TODO: 这里会导致函数体内 EXE_BAD_ACCESS，为什么？
 print("\(person.firstName) \(person.lastName)")
 ~~~
 

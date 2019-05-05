@@ -110,21 +110,6 @@ var result = fa()
 print(result)
 ~~~
 
-### guard 语句
-
-~~~
-func fa(value: String?) {
-  guard var name = value else {
-    print("No Name")
-    return
-  }
-  print("name: \(name)")
-}
-var name: String?
-name = "tony"
-fa(value: name)
-~~~
-
 ## 闭包
 
 ### 基本用法

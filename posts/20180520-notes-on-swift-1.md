@@ -33,6 +33,35 @@ func fa() {
 }
 ~~~
 
+## 运算符
+
+~~~
+// 赋值运算符并不返回值，这能避免将 == 写成 =
+if va = 111 { // 编译错误
+}
+
+// 对负数求余时，负号会被忽略
+print(9 % 4) // 1
+print(9 % -4) // 1
+
+// 比较元组
+print( (1, "zebra") < (2, "apple") ) // true
+print( (2, "apple") < (2, "bird") ) // true
+print( (3, "dog") == (3, "dog") ) // true
+print( ("blue", false) < ("purple", true) ) // 编译错误，小于不能应用于布尔值
+
+// 闭区间
+1...5 // 1 到 5
+// 半开区间
+// TODO: 在起点前后添加大于或小于都会编译错误，那么不包括起点的半开区间怎么写？
+1..<5 // 1 到 4
+// 单侧区间，不能遍历没有初始值的单侧区间，因为起点不知道
+1... // 1 到无穷大
+...1 // 无穷小到 1
+// 半开单侧区间
+..<5 // 无穷小到 4
+~~~
+
 ## 数
 
 ~~~
@@ -42,6 +71,10 @@ var va = 5
 // 类型注解（type annotation），显式地声明变量是整数类型
 var vb: Int = 5
 var vc: Int = "5" // 编译错误，虽然有类型注解，也不代表编译器不关注等号两边的真实类型
+
+// 查看数的范围
+print(Int8.min) // -128
+print(Int8.max) // 127
 
 // 未初始化的变量
 var va: Int
@@ -85,14 +118,44 @@ print(va + 0.1 == 1.2) // false
 ## 字符串
 
 ~~~
+// 多行字符串
+var va = """
+111
+222
+"""
+// 开始符号之后和结束符号之前没换行符号，下面两个字符串是一样的
+var va = "111"
+var vb = """
+111
+"""
+// 换行，方便阅读，但不想在字符串里真正加上换行
+var va = """
+111 \
+222
+"""
+// 缩进，为了让编码美观，结束符号前的空格会被认为是缩进，并不会真正加入到字符串
+var va = """
+   111
+  222
+  """
+
+// 不解析转义字符
+// TODO: 编译错误，这是新特性？
+var va = #"111\n222"#
+print(va) // 111\n222
+
 // 字符串插值（string interpolation）
 var va = "111"
 var vb = 222
 var vc = "va=\(va), vb=\(vb)"
 
+// 字符类型
+var va = "1" // va 是 String 类型
+var vb: Character = "2" // vb 是 Character 类型，用单引号声明字符类型会编译错误，双引号里多于 1 个字符会编译错误
+
 // 遍历字符串的字符
 var va = "111"
-for chr: Character in va {
+for chr in va {
   print("'\(chr)'")
 }
 
@@ -126,8 +189,15 @@ var va = "abcdef"
 var start = va.startIndex
 var idx = va.index(start, offsetBy: 2);
 var range = start...idx
-var vb = va[range]
+var vb = va[range] // 这里 vb 的类型是 SubSequence
 print(vb) // abc
+
+// 子字符串（上例中的 SubSequence）
+// 在改变 vb 之前，vb 不会分配内存，而是使用 va 的内存空间，修改 vb 的时候系统为 vb 分配单独的空间
+var secondIdx = va.index(after: va.startIndex)
+vb.remove(at: secondIdx)
+print(va) // abcdef
+print(vb) // ac
 ~~~
 
 ## 流程控制

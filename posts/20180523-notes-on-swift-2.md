@@ -18,6 +18,11 @@ print(va.1)
 var va = (code:404, info:"Not Found")
 print(va.code)
 print(va.info)
+
+// 元组解压缩
+var va = (404, "Not Found")
+var (code, info) = va // 如果只想提取 code，可用下划线代替 info
+print("code=\(code), info=\(info)")
 ~~~
 
 ## 可空类型
@@ -31,8 +36,7 @@ print(vb) // Optional("111")
 
 // 展开可空类型
 if va != nil {
-  var vb = va!
-  print(vb) // 111
+  print(va!) // 111
 }
 // 未赋值展开会出现运行时崩溃
 var va: String?
@@ -40,7 +44,7 @@ print(va) // nil
 var vb = va! // 运行时崩溃
 print(vb)
 
-// 可空实例绑定
+// 可空实例绑定，能用在 if 或 while 语句中
 var va: String? = "111"
 print(va) // Optional("111")
 if var vb = va {
@@ -59,7 +63,17 @@ if var vb = va, var vc = Int(vb), vc == 111 {
   print("\(vb), \(vc)") // 111, 111
 }
 
-// TODO: 可空类型和隐式展开可空类型的区别是什么？
+// 隐式展开可空类型
+// 非常适合那些第一次赋值后就可以确定之后一直有值的可选类型，主要在类初始化期间使用
+// 其实就是一个普通的可选选类型，但可以被当成非可空类型值来使用，不用每次都通过展开来获取可空类型里的值
+// 可以理解成一种使用时候能自动展开的可空类型，只需在声明的时候用感叹号，而不是每次使用的时候用感叹号
+// 如果后面某个时间点值会是 nil，一定不要使用隐式展开可空类型
+var va: String? = "111"
+var vb: String = va!
+print(vb) // 111
+var vc: String! = "333"
+var vd: String = vc
+print(vd) // 333
 
 // 可空链式调用是一种可以调用属性、方法和下标的过程
 var va: String?

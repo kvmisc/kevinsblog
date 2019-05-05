@@ -220,7 +220,7 @@ var fChangeTo = Person.changeTo
 // 对于非 mutating 方法，self 其实是个副本，为了进行修改，self 需要被声明为 inout。
 var changeTo = fChangeTo(&person)
 changeTo("John", "Gallagher") // TODO: 这里会导致函数体内 EXE_BAD_ACCESS，为什么？
-print("\(person.firstName) \(person.lastName)")
+print("\(person.firstName), \(person.lastName)")
 ~~~
 
 ### 初始化

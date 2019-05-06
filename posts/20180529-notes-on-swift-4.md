@@ -9,6 +9,7 @@ category: ["swift"]
 ## 枚举
 
 ### 基本用法
+
 ~~~
 // 声明枚举
 enum TextAlignment {
@@ -39,11 +40,53 @@ case .center:
 case .right:
   print("right")
 }
+
+// 遍历枚举
+enum TextAlignment: CaseIterable {
+  case left
+  case center
+  case right
+}
+print(TextAlignment.allCases)
 ~~~
 
-### 原始值枚举
+### 关联值
 
 ~~~
+// 不指定名字
+enum Barcode {
+  case upc(Int, Int, Int, Int)
+  case qrcode(String)
+}
+var va = Barcode.upc(8, 85909, 51226, 3)
+var vb = Barcode.qrcode("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
+switch va {
+case .upc(let numberSystem, let manufacturer, let product, let check):
+  print("UPC: \(numberSystem) \(manufacturer) \(product) \(check)")
+case .qrcode(var productCode):
+  print("QR Code: \(productCode)")
+}
+
+// 指定名字
+enum Shape {
+  case square(side: Double)
+  case rectangle(width: Double, height: Double)
+  case point
+}
+
+var va = Shape.square(side: 10)
+var vb = Shape.rectangle(width: 10, height: 20)
+var vc = Shape.point
+~~~
+
+### 原始值
+
+~~~
+// 原始值的类型可以是字符串、字符、整数或浮点数
+// 当原始值类型是整数或字符串时，不需要显式给每个成员赋值，
+// 整数原始值默认从 0 开始，字符串原始值默认是成员的名字
+
 // 默认原始值
 enum TextAlignment: Int {
   case left
@@ -56,14 +99,14 @@ print(TextAlignment.right.rawValue) // 2
 // 指定原始值
 enum TextAlignment: Int {
   case left = 10
-  case center = 20
-  case right = 30
+  case center = 11
+  case right = 12
 }
-print(va.rawValue) // 20
-print(TextAlignment.right.rawValue) // 30
+print(va.rawValue) // 11
+print(TextAlignment.right.rawValue) // 12
 
 // 原始值转枚举
-var va = 20
+var va = 11
 
 var vb = TextAlignment(rawValue: va)
 print(vb) // Optional(TestSwift.TextAlignment.center)
@@ -71,75 +114,6 @@ print(vb) // Optional(TestSwift.TextAlignment.center)
 if var vc = TextAlignment(rawValue: va) {
   print(vc) // center
 }
-
-// 字符串原始值
-enum TextAlignment: String {
-  case left = "Left"
-  case center // center 使用自身名字作为原始值
-  case right = "Right"
-}
-var va = TextAlignment.left
-print("\(va): \(va.rawValue)") // left: Left
-~~~
-
-### 方法
-
-~~~
-enum TextAlignment {
-  case left
-  case center
-  case right
-  func intValue() -> Int {
-    switch self {
-    case .left:
-      return 10
-    case .center:
-      return 20
-    case .right:
-      return 30
-    }
-  }
-  mutating func toNext() { // 枚举是值类型，值类型的方法不能修改 self，如果希望值类型的方法能修改 self，要标记此方法为 mutating
-    switch self {
-    case .left:
-      self = .center
-    case .center:
-      self = .right
-    case .right:
-      self = .left
-    }
-  }
-}
-var va = TextAlignment.right
-print(va.intValue()) // 30
-va.toNext()
-print(va.intValue()) // 10
-~~~
-
-### 关联值
-
-~~~
-enum Shape {
-  case square(side: Double)
-  case rectangle(width: Double, height: Double)
-  case point
-  func area() -> Double {
-    switch self {
-    case var .square(side: s):
-      return s * s
-    case var .rectangle(width: w, height: h):
-      return w * h
-    case .point:
-      return 0
-    }
-  }
-}
-var va = Shape.square(side: 10)
-print(va.area()) // 100.0
-var vb = Shape.rectangle(width: 10, height: 20)
-print(vb.area()) // 200.0
-var vc = Shape.point
-print(vc.area()) // 0.0
 ~~~
 
 ### 递归枚举
@@ -157,7 +131,70 @@ var va = FamilyTree.twoKnownParents(fatherName: "Fred Sr.",
                                     motherAncestors: .noKnownParents)
 ~~~
 
+### 方法
+
+~~~
+enum TextAlignment {
+  case left
+  case center
+  case right
+
+  func intValue() -> Int {
+    switch self {
+    case .left:
+      return 10
+    case .center:
+      return 11
+    case .right:
+      return 12
+    }
+  }
+
+  mutating func toNext() { // 枚举是值类型，值类型的方法不能修改 self，如果希望值类型的方法能修改 self，要标记此方法为 mutating
+    switch self {
+    case .left:
+      self = .center
+    case .center:
+      self = .right
+    case .right:
+      self = .left
+    }
+  }
+}
+
+var va = TextAlignment.right
+print(va.intValue()) // 12
+va.toNext()
+print(va.intValue()) // 10
+~~~
+
 ## 结构体和类
+
+### 异同
+
+结构体和类有很多共同点：
+
+  * 定义属性用于存储值；
+  * 定义方法用于提供功能；
+  * 定义下标操作用于通过下标语法访问它们的值；
+  * 定义构造器用于设置初始值；
+  * 通过扩展以增加默认实现之外的功能；
+  * 遵循协议以提供某种标准功能。
+
+此外，类还有特别的功能：
+
+  * 继承，允许一个类继承另一个类的特征；
+  * 类型转换，允许在运行时检查和解释一个类实例的类型；
+  * 析构器，允许一个类实例释放任何其分配的资源；
+  * 引用计数，允许对一个类的多次引用。
+
+
+
+
+
+
+
+
 
 ### 值类型传递
 ~~~

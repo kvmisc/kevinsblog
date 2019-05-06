@@ -5,7 +5,7 @@
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 <link rel="icon" href="/favicon.ico" type="image/x-icon">
 <link rel="stylesheet" type="text/css" media="screen" href="/main.css">
-<title>Swift 笔记（三）：函数和闭包 - 凯文的博客</title>
+<title>《Swift 编程权威指南》笔记（三）：函数和闭包 - 凯文的博客</title>
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -21,188 +21,225 @@
 </header>
 <div id="page_body">
 <div class="page_body_entry">
-<div class="post_title"><h1>Swift 笔记（三）：函数和闭包</h1></div>
+<div class="post_title"><h1>《Swift 编程权威指南》笔记（三）：函数和闭包</h1></div>
 <div class="post_info">Kevin Wu · 2017/05/26 · swift</div>
 <div class="post_body">
 <h2>函数</h2>
 <h3>函数参数</h3>
 <pre><code>// 无参数
-func aaa() {
+func fa() {
   print(&quot;111&quot;)
 }
-aaa()
+fa()
 
 // 有参数
-func bbb(name: String) {
+func fb(name: String) {
   print(&quot;name: \(name)&quot;)
 }
-bbb(name: &quot;tony&quot;)
+fb(name: &quot;tony&quot;)
 
 // label 参数
-func ccc(label name: String) {
+// 每个函数参数都有一个参数标签和参数名称，参数标签在调用函数的时候使用，参数名称在函数实现中使用
+func fc(label name: String) { // 显式指定参数标签
   print(&quot;name: \(name)&quot;)
 }
-ccc(label: &quot;tony&quot;)
+func fd(_ name: String) { // 忽略参数标签，调用的时候没有参数标签
+  print(&quot;name: \(name)&quot;)
+}
+func fe(name: String) { // 未指定参数标签，默认将参数名称作为参数标签
+  print(&quot;name: \(name)&quot;)
+}
+fc(label: &quot;tony&quot;)
+fd(&quot;tony&quot;)
+fe(name: &quot;tony&quot;)
 
 // 默认参数
-func ddd(name: String = &quot;unknown&quot;) {
+func ff(name: String = &quot;Unknown&quot;) {
   print(&quot;name: \(name)&quot;)
 }
-ddd()
-ddd(name: &quot;tony&quot;)
+ff()
+ff(name: &quot;tony&quot;)
 
-// inout 参数
-func eee(name: String, error: inout String) {
-  print(&quot;name: \(name)&quot;)
-  error = &quot;error occurred&quot;
-}
-var err = &quot;&quot;
-eee(name: &quot;tony&quot;, error: &amp;err)
-print(err)
-
-// 变长参数
-func fff(names: String...) {
+// 可变参数
+func fg(names: String...) {
   for name in names {
     print(name)
   }
 }
-fff(names: &quot;tony&quot;, &quot;bill&quot;)
+fg(names: &quot;tony&quot;, &quot;bill&quot;)
+
+// inout 参数
+// 只能传变量给 inout 参数，不能传常量和字面量
+// inout 参数不能有默认值
+// 可变参数不能标记为 inout
+func fh(name: String, error: inout String) {
+  print(&quot;name: \(name)&quot;)
+  error = &quot;error occurred&quot;
+}
+var err = &quot;&quot;
+fh(name: &quot;tony&quot;, error: &amp;err)
+print(err)
 
 // 函数参数
-func ggg(budget: Int, condition: (Int) -&gt; Bool) {
+func fi(budget: Int, condition: (Int) -&gt; Bool) {
   if condition(budget) {
     print(&quot;111&quot;)
   } else {
     print(&quot;222&quot;)
   }
 }
-func evaluate(value: Int) -&gt; Bool {
+func fj(value: Int) -&gt; Bool {
   return (value&gt;10)
 }
-ggg(budget: 8, condition: evaluate)</code></pre>
+fi(budget: 8, condition: fj)</code></pre>
 <h3>函数返回值</h3>
 <pre><code>// 返回元组
-func aaa() -&gt; (ta: Int, tb: String) {
+func fa() -&gt; (ta: Int, tb: String) {
   return (404, &quot;Not Found&quot;)
 }
-var result = aaa()
+var result = fa()
 print(&quot;(\(result.ta), \(result.tb))&quot;) // (404, Not Found)
 
 // 返回可空类型
-func bbb() -&gt; String? {
+func fb() -&gt; String? {
   return &quot;blah blah&quot;
 }
-var result = bbb()
+var result = fb()
 print(result) // Optional(&quot;blah blah&quot;)
 
 // 返回函数
-func ccc() -&gt; (Int, Int) -&gt; Int {
-  func ddd(a: Int, b: Int) -&gt; Int {
+func fc() -&gt; (Int, Int) -&gt; Int {
+  func fd(a: Int, b: Int) -&gt; Int {
     return (a+b)
   }
-  return ddd
+  return fd
 }
-let result: (Int, Int) -&gt; Int = ccc()
-let value = result(1, 2)
+var result: (Int, Int) -&gt; Int = fc()
+var value = result(1, 2)
 print(value) // 3</code></pre>
 <h3>嵌套函数</h3>
-<pre><code>func aaa() -&gt; Int {
+<pre><code>func fa() -&gt; Int {
   var number = 3
-
-  func double() -&gt; Int {
+  func fb() -&gt; Int {
     return number * 2
   }
-
-  return double()
+  return fb()
 }
-var result = aaa()
+var result = fa()
 print(result)</code></pre>
-<h3>guard 语句</h3>
-<pre><code>func aaa(value: String?) {
-  guard let name = value else {
-    print(&quot;No Name&quot;)
-    return
-  }
-  print(&quot;name: \(name)&quot;)
-}
-var name: String?
-name = &quot;tony&quot;
-aaa(value: name)</code></pre>
 <h2>闭包</h2>
 <h3>基本用法</h3>
-<pre><code>// 闭包语法
+<pre><code>// 全局函数是有名字但不会捕获任何值的闭包
+// 嵌套函数是有名字并可以捕获其封闭函数域内值的闭包
+// 闭包表达式是利用轻量级语法所写的可以捕获其上下文变量或常量值的匿名闭包
+
+// 闭包表达式，一种构建内联闭包的方式，它的语法简洁
+// 参数可以标记为 inout，但不能有默认值
+// 元组可以作为参数和返回值
 { (parameters) -&gt; returnType in
   // code
 }
 
-// 闭包用法
+// 闭包表达式简化
 // 数据准备
-var aaa = [1, 3, 40, 32, 2, 53, 77, 13]
-print(aaa)
-// 使用闭包
-aaa.sort(by: { (a: Int, b: Int) -&gt; Bool in
-  return (a&lt;b)
+var va = [1, 3, 40, 32, 2, 53, 77, 13]
+
+// 正常使用
+va.sort(by: { (a: Int, b: Int) -&gt; Bool in
+  return (a &lt; b)
 })
-print(aaa)
-// 简化闭包，使用类型推断简化，省略参数类型、返回类型、return 关键字。
-// 如果只有一个表达式，可以省略 return，如果有多个表达式，显式 return 是必需的
-aaa.sort(by: { a, b in a&lt;b })
-print(aaa)
-// 简化闭包
-aaa.sort(by: { $0&lt;$1 })
-print(aaa)
-// 简化闭包，如果闭包是函数的最后一个参数，这闭包可以在括号外内联
-aaa.sort { $0&lt;$1 }
-print(aaa)</code></pre>
+
+// 使用类型推断，省略参数类型、返回类型
+va.sort(by: { a, b in return a &lt; b })
+
+// 单表达式闭包的隐式返回
+// 单行表达式闭包可以通过省略 return 关键字来隐式返回表达式的结果
+va.sort(by: { a, b in a &lt; b })
+
+// 参数名称缩写
+// Swift 自动为内联闭包提供参数名称缩写
+va.sort(by: { $0&lt;$1 })
+
+// 运算符方法
+// String 类型定义了小于符号的字符串实现，其作为一个函数接受两个 String 类型的参数并返回 Bool 值
+va.sort(by: &lt;)
+
+// 尾随闭包，如果闭包是函数的最后一个参数，这闭包可以写在圆括号外，参数标签可以省略，如果函数只有一个参数，圆括号也可以省略
+va.sort { $0&lt;$1 }</code></pre>
 <h3>捕获变量</h3>
-<pre><code>func aaa(count: Int) -&gt; (Int) -&gt; Int {
+<pre><code>// 上面已经讲到嵌套函数其实是一种闭包，嵌套函数可以捕获其外部函数所有的参数以及定义的常量和变量
+func fa(count: Int) -&gt; (Int) -&gt; Int {
   var total = count
-  func bbb(value: Int) -&gt; Int {
+  func fb(value: Int) -&gt; Int {
     total += value
     return total
   }
-  return bbb
+  return fb
 }
-var number1 = 100
-let result1: (Int) -&gt; Int = aaa(count: number1)
-result1(1)
-print(number1) // 100
-number1 = result1(2)
-print(number1) // 103
+var va = 100
+var ffa = fa(count: va)
+ffa(1) // va=100 total=101
+va = ffa(2) // va=103 total=103
+var ffb = ffa // 闭包是引用类型，ffb 和 ffa 指向同一个闭包
+ffb(3) // va=103 total=106
+va = ffb(4) // va=110 total=110
 
-let result2 = result1
-result2(3)
-print(number1) // 103
-number1 = result2(4)
-print(number1) // 110
+var vc = 200
+var ffc = fa(count: vc)
+ffc(1) // vc=200 total=201
+vc = ffc(2) // vc=203 total=203</code></pre>
+<h3>逃逸闭包</h3>
+<pre><code>// TODO: 加深对逃逸闭包的理解
 
-var number3 = 200
-let result3: (Int) -&gt; Int = aaa(count: number3)
-result3(1)
-print(number3) // 200
-number3 = result3(2)
-print(number3) // 203</code></pre>
+// 当闭包作为参数传到函数但调用却在函数返回之后时，我们称该闭包从函数中逃逸
+
+var CompletionHandlers: [() -&gt; Void] = []
+
+func FunctionWithEscapingClosure(handler: @escaping () -&gt; Void) {
+  CompletionHandlers.append(handler) // 将参数中的闭包保存到全局数组中，如果不加 @escaping 则会编译错误
+}
+
+func FunctionWithNonescapingClosure(handler: () -&gt; Void) {
+  handler() // 直接执行闭包
+}
+
+class SomeClass {
+  var x = 10
+  func doSomething() {
+    FunctionWithEscapingClosure { self.x = 100 } // 逃逸闭包要显式地引用 self
+    FunctionWithNonescapingClosure { x = 200 }
+  }
+}
+
+var instance = SomeClass()
+instance.doSomething()
+print(instance.x) // 200
+
+CompletionHandlers.first?()
+print(instance.x) // 100</code></pre>
+<h3>自动闭包</h3>
+<pre><code>// TODO: 加深对自动闭包的理解</code></pre>
 <h3>高阶函数</h3>
 <pre><code>// 转换（map）
-let aaa = [8, 2, 5]
-let bbb = aaa.map { (value: Int) -&gt; Int in
-  return (value*2)
+var va = [8, 2, 5]
+var vb = va.map { (value: Int) -&gt; Int in
+  return (value * 2)
 }
-print(bbb) // [16, 4, 10]
+print(vb) // [16, 4, 10]
 
 // 过滤（filter）
-let aaa = [8, 2, 5]
-let bbb = aaa.filter { (value: Int) -&gt; Bool in
-  return (value&gt;=5)
+var va = [8, 2, 5]
+var vb = va.filter { (value: Int) -&gt; Bool in
+  return (value &gt;= 5)
 }
-print(bbb) // [8, 5]
+print(vb) // [8, 5]
 
 // 累积（reduce）
-let aaa = [8, 2, 5]
-let bbb = aaa.reduce(0) { (result: Int, value: Int) -&gt; Int in
-  return (result+value)
+var va = [8, 2, 5]
+var vb = va.reduce(0) { (result: Int, value: Int) -&gt; Int in
+  return (result + value)
 }
-print(bbb) // 15</code></pre>
+print(vb) // 15</code></pre>
 </div>
 </div>
 </div>

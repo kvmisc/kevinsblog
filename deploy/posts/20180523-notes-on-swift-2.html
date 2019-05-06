@@ -5,7 +5,7 @@
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 <link rel="icon" href="/favicon.ico" type="image/x-icon">
 <link rel="stylesheet" type="text/css" media="screen" href="/main.css">
-<title>Swift 笔记（二）：高级对象 - 凯文的博客</title>
+<title>《Swift 编程权威指南》笔记（二）：高级对象 - 凯文的博客</title>
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -21,217 +21,241 @@
 </header>
 <div id="page_body">
 <div class="page_body_entry">
-<div class="post_title"><h1>Swift 笔记（二）：高级对象</h1></div>
+<div class="post_title"><h1>《Swift 编程权威指南》笔记（二）：高级对象</h1></div>
 <div class="post_info">Kevin Wu · 2017/05/23 · swift</div>
 <div class="post_body">
-<h2>元组</h2>
-<pre><code>// 无名元组
-let aaa = (404, &quot;Not Found&quot;)
-print(aaa.0)
-print(aaa.1)
-
-// 有名元组，也可以用下标访问
-let aaa = (code:404, info:&quot;Not Found&quot;, other:&quot;blah blah&quot;)
-print(aaa.code)
-print(aaa.info)
-print(aaa.other)</code></pre>
 <h2>可空类型</h2>
-<pre><code>var aaa: String?
-aaa = &quot;111&quot;
-print(aaa) // Optional(&quot;111&quot;)
-var bbb: String?
-print(bbb) // nil
+<pre><code>var va: String?
+print(va) // nil
+var vb: String?
+vb = &quot;111&quot;
+print(vb) // Optional(&quot;111&quot;)
 
 // 展开可空类型
-if aaa != nil {
-  let bbb = aaa!
-  print(bbb)
+var va: String? = &quot;111&quot;
+if va != nil {
+  print(va!) // 111
 }
-// 未赋值展开会出现运行时错误
-var aaa: String?
-print(aaa)
-let bbb = aaa! // 出错
-print(bbb)
+// 未赋值展开会出现运行时崩溃
+var va: String?
+var vb = va! // 运行时崩溃
+print(vb)
 
-// 可空实例绑定
-var aaa: String?
-aaa = &quot;111&quot;
-print(aaa) // Optional(&quot;111&quot;)
-if let bbb = aaa {
-  print(bbb) // 111
+// 可空实例绑定，能用在 if 或 while 语句中
+var va: String? = &quot;111&quot;
+if var vb = va {
+  print(vb) // 111
 }
 // 多个可空实例绑定
-var aaa: String?
-aaa = &quot;111&quot;
-print(aaa) // Optional(&quot;111&quot;)
-if let bbb = aaa, let ccc = Int(bbb) { // 字符串 bbb 的值有可能不是数字，所以 Int() 返回的是可空类型
-  print(&quot;\(bbb), \(ccc)&quot;) // 111, 111
+var va: String? = &quot;111&quot;
+if var vb = va, var vc = Int(vb) { // 字符串 vb 的值有可能不是数字，所以 Int() 返回的是可空类型
+  print(&quot;\(vb), \(vc)&quot;) // 111, 111
 }
-// 多个可空实例，附带条件检查
-var aaa: String?
-aaa = &quot;111&quot;
-print(aaa) // Optional(&quot;111&quot;)
-if let bbb = aaa, let ccc = Int(bbb), ccc == 111 {
-  print(&quot;\(bbb), \(ccc)&quot;) // 111, 111
+// 多个可空实例绑定，附带条件检查
+var va: String? = &quot;111&quot;
+if var vb = va, var vc = Int(vb), vc == 111 {
+  print(&quot;\(vb), \(vc)&quot;) // 111, 111
 }
 
-// 隐式展开可空类型与可空类型的区别是：隐式展开可空类型不需要展开
-var aaa: String!
-aaa = &quot;111&quot;
-print(aaa!) // 111
-
-var aaa: String!
-print(aaa) // nil
-let bbb: String = aaa // 出错，将 String? 类型赋值给 String 类型
-print(bbb) // nil
-let ccc = aaa // swift 会推断出 ccc 尽可能安全的类型：String?
-print(ccc) // nil
-let ddd: String! = aaa // 显式声明 ddd 为隐式展开可空类型
-print(ddd)
+// 隐式展开可空类型
+// 非常适合那些第一次赋值后就可以确定之后一直有值的可选类型，主要在类初始化期间使用
+// 其实就是一个普通的可选选类型，但可以被当成非可空类型值来使用，不用每次都通过展开来获取可空类型里的值
+// 可以理解成一种使用时候能自动展开的可空类型，只需在声明的时候用感叹号，而不是每次使用的时候用感叹号
+// 如果后面某个时间点值会是 nil，一定不要使用隐式展开可空类型
+var va: String? = &quot;111&quot;
+var vb: String = va!
+print(vb) // 111
+var vc: String! = &quot;333&quot;
+var vd: String = vc
+print(vd) // 333
 
 // 可空链式调用是一种可以调用属性、方法和下标的过程
-var aaa: String?
-print(aaa) // nil
-var bbb = aaa?.uppercased() // aaa 末尾的问号表明这行代码开始了可空链式调用过程
-print(bbb) // nil
+var va: String?
+var vb = va?.uppercased() // va 末尾的问号表明这行代码开始了可空链式调用过程
+print(vb) // nil
 
 // nil 合并运算符
-var aaa: String?
-//aaa = &quot;111&quot;
-let bbb = aaa ?? &quot;222&quot; // 如果 aaa 为空，则使用后面的同类型非可空实例
-print(bbb) // 222</code></pre>
+var va: String? = &quot;111&quot;
+var vb = va ?? &quot;222&quot; // 如果 va 为空，则使用后面的同类型非可空实例
+print(vb) // 111</code></pre>
+<h2>元组</h2>
+<pre><code>// 无名元组
+var va = (404, &quot;Not Found&quot;)
+print(va.0)
+print(va.1)
+
+// 有名元组，用名字访问元素，也可以用数字下标访问
+var va = (code:404, info:&quot;Not Found&quot;)
+print(va.code)
+print(va.info)
+
+// 元组解压缩
+var va = (404, &quot;Not Found&quot;)
+var (code, info) = va
+print(&quot;code=\(code), info=\(info)&quot;)
+var (_, info) = va // 如果只想提取 info，可用下划线代替 code</code></pre>
 <h2>数组</h2>
 <pre><code>// 创建数组
-var aaa: Array&lt;String&gt; = []
-var bbb: Array&lt;String&gt; = Array()
-var ccc = Array&lt;String&gt;()
-var ddd = Array() // 出错，推断不出类型
+var va: Array&lt;String&gt; = []
+var vb: Array&lt;String&gt; = Array()
+var vc = Array&lt;String&gt;()
+var vd = Array() // 编译错误，推断不出类型
 
-var eee = [111, 111, 111] // 可以包含重复的值
-print(eee)
+var ve: [String] = []
+var vf = [String]()
 
-var fff = [&quot;111&quot;, &quot;222&quot;, 333] // 出错
-print(fff)
+var vg = [111, 111, 111] // 可以包含重复的值
+
+var vh = [&quot;111&quot;, &quot;222&quot;, 333] // 编译错误
 
 // 统计元素
-print(aaa.count)
+print(va.count) // 3
+print(va.isEmpty) // false
 
 // 访问元素
-print(aaa[0]) // 111
-print(aaa[1...2]) // [&quot;222&quot;, &quot;333&quot;]
+print(va[0]) // 111
+print(va[1...2]) // [&quot;222&quot;, &quot;333&quot;]
+print(va[10]) // 运行时崩溃
 
 // 修改元素
-aaa[1] += &quot;asdf&quot;
-print(aaa) // [&quot;111&quot;, &quot;222asdf&quot;, &quot;333&quot;]
+va[1] += &quot;asdf&quot; // [&quot;111&quot;, &quot;222asdf&quot;, &quot;333&quot;]
 // 替换元素
-aaa[1] = &quot;asdf&quot;
-print(aaa) // [&quot;111&quot;, &quot;asdf&quot;, &quot;333&quot;]
+va[1] = &quot;asdf&quot; // [&quot;111&quot;, &quot;asdf&quot;, &quot;333&quot;]
+// 替换多个元素
+var[1...2] = [&quot;444&quot;] // [&quot;111&quot;, &quot;444&quot;]
 
 // 添加元素
-aaa.append(&quot;444&quot;)
-aaa.append(&quot;555&quot;)
+va.append(&quot;444&quot;) // [&quot;111&quot;, &quot;222&quot;, &quot;333&quot;, &quot;444&quot;]
+va.append(&quot;555&quot;) // [&quot;111&quot;, &quot;222&quot;, &quot;333&quot;, &quot;444&quot;, &quot;555&quot;]
 // 插入元素
-aaa.insert(&quot;444&quot;, at: 1)
-print(aaa) // [&quot;111&quot;, &quot;444&quot;, &quot;222&quot;, &quot;333&quot;]
+va.insert(&quot;666&quot;, at: 1) // [&quot;111&quot;, &quot;666&quot;, &quot;222&quot;, &quot;333&quot;, &quot;444&quot;, &quot;555&quot;]
 // 追加数组
-let bbb = [&quot;444&quot;, &quot;555&quot;]
-aaa += bbb
-print(aaa) // [&quot;111&quot;, &quot;222&quot;, &quot;333&quot;, &quot;444&quot;, &quot;555&quot;]
+var vb = [&quot;777&quot;, &quot;888&quot;]
+va += vb  // [&quot;111&quot;, &quot;666&quot;, &quot;222&quot;, &quot;333&quot;, &quot;444&quot;, &quot;555&quot;, &quot;777&quot;, &quot;888&quot;]
 
 // 删除元素
-aaa.remove(at: 0)
+var vb = va.remove(at: 0) // [&quot;222&quot;, &quot;333&quot;]
+print(vb) // 111
 
-// 不可变数组
-let bbb = [&quot;111&quot;, &quot;333&quot;, &quot;222&quot;]
-bbb[1] = &quot;asdf&quot; // 出错
-bbb = [&quot;444&quot;, &quot;555&quot;] // 出错
+// 遍历元素
+for item in va {
+  print(item)
+}
+for (index, item) in va.enumerated() {
+  print(&quot;\(index): \(item)&quot;)
+}
 
 // 判断相等，相同位置元素相等的数组才算相等
-var bbb = [&quot;111&quot;, &quot;333&quot;, &quot;222&quot;]
-print(aaa==bbb) // false</code></pre>
-<h2>字典</h2>
-<pre><code>// 创建字典
-var aaa: Dictionary&lt;String, String&gt; = [:]
-var bbb: Dictionary&lt;String, String&gt; = Dictionary()
-var ccc = Dictionary&lt;String, String&gt;()
-var ddd = Dictionary() // 出错，推断不出类型
-var eee: [String:String] = [:]
-var fff = [String:String]()
+var vd = [&quot;111&quot;, &quot;333&quot;, &quot;222&quot;]
+print(va == vd) // false</code></pre>
+<h2>集合</h2>
+<pre><code>// 当元素顺序不重要或者希望每个元素只出现一次，可以使用集合
+// 能存在集合的类型都必须是可哈希的，即该类型必须提供一个方法来计算它的哈希值
+// 所有基本类型（String、Int、Double 和 Bool）都是可哈希的，没有关联值的枚举成员值也是可哈希的
 
-var ggg = [&quot;1&quot;:&quot;111&quot;, &quot;2&quot;:&quot;222&quot;, &quot;3&quot;:&quot;333&quot;]
-print(ggg) // [&quot;2&quot;: &quot;222&quot;, &quot;3&quot;: &quot;333&quot;, &quot;1&quot;: &quot;111&quot;]
+// 创建集合
+var va: Set&lt;String&gt; = []
+var vb: Set&lt;String&gt; = Set()
+var vc = Set&lt;String&gt;()
+var vd = Set() // 编译错误，推断不出类型
+
+var ve: Set&lt;String&gt; = [&quot;111&quot;, &quot;222&quot;, &quot;333&quot;] // 如果不写类型，会被推断为字符串数组
+var vf: Set = [&quot;111&quot;, &quot;222&quot;, &quot;333&quot;] // 虽然不能推断出集合，但能推断出集合中的元素是字符串
 
 // 统计元素
-print(aaa.count)
+print(va.count) // 3
+print(va.isEmpty) // false
 
-// 访问元素，返回的是可空类型
-print(aaa[&quot;2&quot;]) // Optional(&quot;222&quot;)
+// 访问元素
 
 // 修改元素
-aaa[&quot;2&quot;] += &quot;asdf&quot; // 出错
-// 替换元素
-aaa[&quot;2&quot;] = &quot;asdf&quot;
-print(aaa) // [&quot;1&quot;: &quot;111&quot;, &quot;2&quot;: &quot;asdf&quot;, &quot;3&quot;: &quot;333&quot;]
-aaa.updateValue(&quot;qwer&quot;, forKey: &quot;2&quot;) // 返回被替换的可空类型
-print(aaa) // [&quot;1&quot;: &quot;111&quot;, &quot;2&quot;: &quot;qwer&quot;, &quot;3&quot;: &quot;333&quot;]
 
 // 添加元素
-aaa[&quot;4&quot;] = &quot;444&quot;
-print(aaa) // [&quot;3&quot;: &quot;333&quot;, &quot;1&quot;: &quot;111&quot;, &quot;2&quot;: &quot;222&quot;, &quot;4&quot;: &quot;444&quot;]
+va.insert(&quot;444&quot;) // [&quot;111&quot;, &quot;222&quot;, &quot;333&quot;, &quot;444&quot;]
 
 // 删除元素
-aaa.removeValue(forKey: &quot;2&quot;) // 返回被删除的可空类型
-print(aaa) // [&quot;1&quot;: &quot;111&quot;, &quot;3&quot;: &quot;333&quot;]
-aaa[&quot;3&quot;] = nil
-print(aaa) // [&quot;1&quot;: &quot;111&quot;]
+var vb = va.remove(&quot;222&quot;) // [&quot;111&quot;, &quot;333&quot;]
+print(vb) // Optional(&quot;222&quot;)
 
-// 遍历字典
-for (key, value) in aaa { // 遍历键值
-  print(&quot;\(key)=\(value)&quot;)
+// 遍历元素
+for item in va {
+  print(item)
 }
-for key in aaa.keys { // 遍历键
-  print(key)
+for item in va.sorted() {
+  print(item)
 }
 
-// 不可变字典
-let aaa = [&quot;1&quot;:&quot;111&quot;, &quot;2&quot;:&quot;222&quot;, &quot;3&quot;:&quot;333&quot;]
-aaa = [&quot;4&quot;:&quot;444&quot;, &quot;5&quot;:&quot;555&quot;] // 出错
-aaa[&quot;2&quot;] = &quot;asdf&quot; // 出错
+// 集合操作
+// 并集
+var vc = va.union(vb) // [&quot;111&quot;, &quot;222&quot;, &quot;333&quot;, &quot;444&quot;]
+// 交集
+var vc = va.intersection(vb) // [&quot;333&quot;]
+// 补集，A-交集
+var vc = va.subtracting(vb) // [&quot;111&quot;, &quot;222&quot;]
+// 对称差，A+B-交集
+var vc = va.symmetricDifference(vb) // [&quot;111&quot;, &quot;222&quot;, &quot;444&quot;]
 
-// 字典转数组
-let bbb = Array(aaa.keys)
-print(bbb) // [&quot;3&quot;, &quot;2&quot;, &quot;1&quot;]</code></pre>
-<h2>集合</h2>
-<pre><code>// 创建集合
-var aaa: Set&lt;String&gt; = []
-var bbb: Set&lt;String&gt; = Set()
-var ccc = Set&lt;String&gt;()
-var ddd = Set() // 出错，推断不出类型
+// 集合关系
+// 相等
+print(va == vb)
+// 是否子集
+print(va.isSubset(of: vb))
+// 是否子集且不相等
+print(va.isStrictSubset(of: vb))
+// 是否包含
+print(va.isSuperset(of: vb))
+// 是否包含且不相等
+print(va.isStrictSuperset(of: vb))
+// 不相交，没有相同的值
+print(va.isDisjoint(with: vb))</code></pre>
+<h2>字典</h2>
+<pre><code>// 创建字典
+var va: Dictionary&lt;String, String&gt; = [:]
+var vb: Dictionary&lt;String, String&gt; = Dictionary()
+var vc = Dictionary&lt;String, String&gt;()
+var vd = Dictionary() // 编译错误，推断不出类型
 
-var eee: Set&lt;String&gt; = [&quot;111&quot;, &quot;222&quot;, &quot;333&quot;]
-print(eee)
+var ve: [String:String] = [:]
+var vf = [String:String]()
+
+var vg = [&quot;1&quot;:&quot;111&quot;, &quot;2&quot;:&quot;222&quot;, &quot;3&quot;:&quot;333&quot;]
+print(vg) // [&quot;1&quot;:&quot;111&quot;, &quot;2&quot;:&quot;222&quot;, &quot;3&quot;:&quot;333&quot;]
+
+// 统计元素
+print(va.count)
+print(va.isEmpty)
+
+// 访问元素，返回的是可空类型
+print(va[&quot;2&quot;]) // Optional(&quot;222&quot;)
+
+// TODO: 为何能替换却不能修改字典某个元素的值？
+// 修改元素
+va[&quot;2&quot;] += &quot;asdf&quot; // 编译错误
+// 替换元素
+va[&quot;2&quot;] = &quot;asdf&quot; // [&quot;1&quot;:&quot;111&quot;, &quot;2&quot;:&quot;asdf&quot;, &quot;3&quot;:&quot;333&quot;]
+// 调用方法替换
+var vb = va.updateValue(&quot;asdf&quot;, forKey: &quot;3&quot;) // [&quot;1&quot;:&quot;111&quot;, &quot;2&quot;:&quot;asdf&quot;, &quot;3&quot;:&quot;asdf&quot;]
+print(vb) // Optional(&quot;333&quot;)
 
 // 添加元素
-aaa.insert(&quot;asdf&quot;)
+va[&quot;4&quot;] = &quot;444&quot; // [&quot;1&quot;:&quot;111&quot;, &quot;2&quot;:&quot;222&quot;, &quot;3&quot;:&quot;333&quot;, &quot;4&quot;: &quot;444&quot;]
+// 调用方法添加
+var vb = va.updateValue(&quot;444&quot;, forKey: &quot;4&quot;) // [&quot;1&quot;:&quot;111&quot;, &quot;2&quot;:&quot;asdf&quot;, &quot;3&quot;:&quot;333&quot;, &quot;4&quot;: &quot;444&quot;]
+print(vb) // Optional(&quot;444&quot;)
 
-// 并集，A+B
-var ccc = aaa.union(bbb)
-print(ccc) // [&quot;333&quot;, &quot;444&quot;, &quot;222&quot;, &quot;111&quot;]
+// 删除元素
+va[&quot;2&quot;] = nil // [&quot;1&quot;: &quot;111&quot;, &quot;3&quot;: &quot;333&quot;]
+// 调用方法删除
+var vb = va.removeValue(forKey: &quot;3&quot;) // [&quot;1&quot;: &quot;111&quot;]
+print(vb) // Optional(&quot;333&quot;)
 
-// 交集
-var ccc = aaa.intersection(bbb)
-print(ccc) // [&quot;333&quot;]
-
-// 补集，A-AB交集
-var ccc = aaa.subtracting(bbb)
-print(ccc) // [&quot;111&quot;, &quot;222&quot;]
-
-// 对称差，A+B-AB交集
-var ccc = aaa.symmetricDifference(bbb)
-print(ccc) // [&quot;222&quot;, &quot;111&quot;, &quot;444&quot;]
-
-// 不相交
-print(aaa.isDisjoint(with: bbb)) // false，aaa 和 bbb 有相同的元素，它们是相交的</code></pre>
+// 遍历字典
+for (key, value) in va { // 遍历键值
+  print(&quot;\(key)=\(value)&quot;)
+}
+for key in va.keys { // 遍历键
+  print(key)
+}</code></pre>
 </div>
 </div>
 </div>

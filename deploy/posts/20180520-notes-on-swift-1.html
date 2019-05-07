@@ -22,31 +22,30 @@
 <div id="page_body">
 <div class="page_body_entry">
 <div class="post_title"><h1>《Swift 编程权威指南》笔记（一）：语言基础</h1></div>
-<div class="post_info">Kevin Wu · 2017/05/20 · swift</div>
+<div class="post_info">Kevin Wu · 2018/05/20 · swift</div>
 <div class="post_body">
 <h2>变量和常量</h2>
-<pre><code>// 变量
+<p>全局或局部存储变量为特定类型的值提供存储空间，并允许读取和写入，存储变量能定义观察者。另外，在全局和局部范围内还可以定义计算变量，计算变量返回一个计算结果而不存储值。</p>
+<p>全局的变量和常量都是惰性的，但不需要标记为 lazy。局部范围的变量和常量从不延迟计算。</p>
+<pre><code>// 全局或局部存储变量
 var va = 5, vb = 5.0, vc = &quot;111&quot;
-// 常量
+// 全局或局部存储常量
 let vd = 5
 
-// 观察全局变量
-var ga = 0 {
-  willSet { print(&quot;Global WillSet: \(newValue)&quot;) }
-  didSet { print(&quot;Global DidSet: \(oldValue)&quot;) }
+// 全局或局部计算变量
+var va: Int {
+  return (2 * 2)
 }
-ga = 1
-ga = 2
+print(&quot;va: \(va)&quot;)
 
-// 观察本地变量
-func fa() {
-  var la = 0 {
-    willSet { print(&quot;Local WillSet: \(newValue)&quot;) }
-    didSet { print(&quot;Local DidSet: \(oldValue)&quot;) }
-  }
-  la = 1
-  la = 2
-}</code></pre>
+
+// 观察全局或局部存储变量
+var va = 0 {
+  willSet { print(&quot;WillSet: \(newValue)&quot;) }
+  didSet { print(&quot;DidSet: \(oldValue)&quot;) }
+}
+va = 1
+va = 2</code></pre>
 <h2>运算符</h2>
 <pre><code>// 赋值运算符并不返回值，这能避免将 == 写成 =
 if va = 111 {} // 编译错误

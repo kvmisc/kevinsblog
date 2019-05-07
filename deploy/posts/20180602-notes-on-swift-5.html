@@ -1,39 +1,51 @@
----
-title: "《Swift 编程权威指南》笔记（五）：结构体和类"
-author: "Kevin Wu"
-date: "2018/05/02"
-category: ["swift"]
----
-
-
-## 异同
-
-结构体和类有很多共同点：
-
-  * 定义属性用于存储值；
-  * 定义方法用于提供功能；
-  * 定义下标操作用于通过下标语法访问它们的值；
-  * 定义构造器用于设置初始值；
-  * 通过扩展以增加默认实现之外的功能；
-  * 遵循协议以提供某种标准功能。
-
-此外，类还有特别的功能：
-
-  * 继承，允许一个类继承另一个类的特征；
-  * 类型转换，允许在运行时检查和解释一个类实例的类型；
-  * 析构器，允许一个类实例释放任何其分配的资源；
-  * 引用计数，允许对一个类的多次引用。
-
-## 值类型和引用类型
-
-值类型被赋值给变量、常量或传递给函数的时候，其值会被拷贝。所有的基本类型（整数、浮点数、布尔值、字符串、数组和字典）都是值类型，其底层是用结构体实现的。枚举和结构体也是值类型。
-
-标准库中的集合，例如数组、字典和字符串，都对复制进行了优化，新集合不会立即复制，而是跟原集合共享同一份内存。在集合的某个副本要被修改前才会复制它的元素，在代码中看起来就像是立即发生了复制。
-
-引用类型被赋值给变量、常量或传递给函数的时候，其值不会被拷贝。因此，使用的是已存在实例的引用，而不是其拷贝。可以用恒等运算符来判断多个变量或常量是否引用同一个实例。
-
-~~~
-// 当值类型的实例被声明为常量的时候，它的所有属性也就成了常量
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="description" content="kevin's blog for some private ideas.">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" type="text/css" media="screen" href="/main.css">
+<title>《Swift 编程权威指南》笔记（五）：结构体和类 - 凯文的博客</title>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+   })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+   ga('create', 'UA-82919702-1', 'auto');
+   ga('send', 'pageview');
+</script>
+</head>
+<body>
+<header>
+<h1 id="site_title"><a href="/">凯文的博客</a></h1>
+</header>
+<div id="page_body">
+<div class="page_body_entry">
+<div class="post_title"><h1>《Swift 编程权威指南》笔记（五）：结构体和类</h1></div>
+<div class="post_info">Kevin Wu · 2018/05/02 · swift</div>
+<div class="post_body">
+<h2>异同</h2>
+<p>结构体和类有很多共同点：</p>
+<ul>
+<li>定义属性用于存储值；</li>
+<li>定义方法用于提供功能；</li>
+<li>定义下标操作用于通过下标语法访问它们的值；</li>
+<li>定义构造器用于设置初始值；</li>
+<li>通过扩展以增加默认实现之外的功能；</li>
+<li>遵循协议以提供某种标准功能。</li>
+</ul>
+<p>此外，类还有特别的功能：</p>
+<ul>
+<li>继承，允许一个类继承另一个类的特征；</li>
+<li>类型转换，允许在运行时检查和解释一个类实例的类型；</li>
+<li>析构器，允许一个类实例释放任何其分配的资源；</li>
+<li>引用计数，允许对一个类的多次引用。</li>
+</ul>
+<h2>值类型和引用类型</h2>
+<p>值类型被赋值给变量、常量或传递给函数的时候，其值会被拷贝。所有的基本类型（整数、浮点数、布尔值、字符串、数组和字典）都是值类型，其底层是用结构体实现的。枚举和结构体也是值类型。</p>
+<p>标准库中的集合，例如数组、字典和字符串，都对复制进行了优化，新集合不会立即复制，而是跟原集合共享同一份内存。在集合的某个副本要被修改前才会复制它的元素，在代码中看起来就像是立即发生了复制。</p>
+<p>引用类型被赋值给变量、常量或传递给函数的时候，其值不会被拷贝。因此，使用的是已存在实例的引用，而不是其拷贝。可以用恒等运算符来判断多个变量或常量是否引用同一个实例。</p>
+<pre><code>// 当值类型的实例被声明为常量的时候，它的所有属性也就成了常量
 struct Stt {
   var value = 0
 }
@@ -45,13 +57,9 @@ class Cls {
   var value = 0
 }
 let vb = Cls()
-vb.value = 101
-~~~
-
-## 初始化
-
-~~~
-//////////////////////////////////////////////////////////////////////
+vb.value = 101</code></pre>
+<h2>初始化</h2>
+<pre><code>//////////////////////////////////////////////////////////////////////
 // 结构体初始化
 //
 // 编译器提供的初始化方法
@@ -77,12 +85,12 @@ struct Town {
     self.region = region
   }
   init(population: Int, stoplights: Int) {
-    self.init(region: "N/A", population: population, stoplights: stoplights)
+    self.init(region: &quot;N/A&quot;, population: population, stoplights: stoplights)
   }
 }
-var va = Town(population: 0, stoplights: 0, region: "") // 编译错误，编译器提供的初始化方法已经不存在了
-var vb = Town(region: "", population: 0, stoplights: 0)
-vb.region = "South" // 编译出错，region 是常量
+var va = Town(population: 0, stoplights: 0, region: &quot;&quot;) // 编译错误，编译器提供的初始化方法已经不存在了
+var vb = Town(region: &quot;&quot;, population: 0, stoplights: 0)
+vb.region = &quot;South&quot; // 编译出错，region 是常量
 var vc = Town(population: 0, stoplights: 0)
 
 //////////////////////////////////////////////////////////////////////
@@ -98,13 +106,9 @@ class Monster {
 // 当类的所有存储属性都有默认值的时候，可以调用这个方法
 // 当类的部分存储属性没有默认值，且没有提供自定义初始化方法的时候，编译错误
 var va = Monster()
-// 类没有默认成员初始化方法
-~~~
-
-## 属性
-
-~~~
-class Monster {
+// 类没有默认成员初始化方法</code></pre>
+<h2>属性</h2>
+<pre><code>class Monster {
   //////////////////////////////////////////////////////////////////////
   // 实例属性
 
@@ -117,7 +121,7 @@ class Monster {
   //   末尾的圆括号确保第一次访问此属性时调用闭包并将结果赋给属性，如果省略了圆括号，表示把闭包赋给属性
   lazy var lazyProperty1: Int = { return (self.storedProperty * 2) }()
   // 2)创建某个实例并赋值
-  lazy var lazyProperty2: Array<String> = []
+  lazy var lazyProperty2: Array&lt;String&gt; = []
 
   // 计算属性，必须声明为 var，就算是只读计算属性
   // 必须有类型信息编译器才知道 get 方法返回的是什么
@@ -141,14 +145,14 @@ class Monster {
   // 存储类属性，可以是变量或常量
   // 必须有默认值，因为没有初始化方法来初始化
   // 是惰性的，未初始化存储类属性被多线程同时访问也只初始化一次
-  static var classStoredProperty = "class stored property"
+  static var classStoredProperty = &quot;class stored property&quot;
 
   // 计算类属性，只能是变量
   // 可以定义为可读可写
   // 可以用 static 或 class 声明，用 static 声明时子类不能重写
   class var classComputedProperty: String {
-    // get { return "class computed property" }
-    return "class computed property"
+    // get { return &quot;class computed property&quot; }
+    return &quot;class computed property&quot;
   }
 }
 
@@ -185,15 +189,11 @@ class Zombie: Monster {
 
   // 重写父类的计算类属性
   override static var classComputedProperty: String {
-    return "override class computed property"
+    return &quot;override class computed property&quot;
   }
-}
-~~~
-
-## 属性观察者
-
-~~~
-class Monster {
+}</code></pre>
+<h2>属性观察者</h2>
+<pre><code>class Monster {
   //////////////////////////////////////////////////////////////////////
   // 属性观察者
 
@@ -206,9 +206,9 @@ class Monster {
   var numberOfVictims1 = 0
   var numberOfVictims2 = 0 {
     // 如果不指定参数名字，Swift 会自动把参数命名为 newValue
-    willSet(newNumberOfVictims) { print("WillSetVictims2: \(self.numberOfVictims2) \(newNumberOfVictims)") }
+    willSet(newNumberOfVictims) { print(&quot;WillSetVictims2: \(self.numberOfVictims2) \(newNumberOfVictims)&quot;) }
     // 如果不指定参数名字，Swift 会自动把参数命名为 oldValue
-    didSet { print("DidSetVictims2: \(oldValue) \(self.numberOfVictims2)") }
+    didSet { print(&quot;DidSetVictims2: \(oldValue) \(self.numberOfVictims2)&quot;) }
   }
 }
 
@@ -220,27 +220,23 @@ class Zombie: Monster {
   // 不能同时提供 set 方法和观察者，在 set 方法中已经可以观察到值的变化
   // 1)给父类未观察的属性添加观察者
   override var numberOfVictims1: Int {
-    willSet { print("Override WillSetVictims1: ") }
-    didSet { print("Override DidSetVictims1: ") }
+    willSet { print(&quot;Override WillSetVictims1: &quot;) }
+    didSet { print(&quot;Override DidSetVictims1: &quot;) }
   }
   // 2)重写父类已观察属性的观察者
   // TODO: 子类和父类的通知方法都会被调用，为什么？
   override var numberOfVictims2: Int {
-    willSet { print("Override WillSetVictims2: ") }
-    didSet { print("Override DidSetVictims2: ") }
+    willSet { print(&quot;Override WillSetVictims2: &quot;) }
+    didSet { print(&quot;Override DidSetVictims2: &quot;) }
   }
-}
-~~~
-
-## 方法
-
-~~~
-class Monster {
+}</code></pre>
+<h2>方法</h2>
+<pre><code>class Monster {
   //////////////////////////////////////////////////////////////////////
   // 实例方法
   //
   func instanceMethod(value: Int) {
-    print("instance method called: \(value)")
+    print(&quot;instance method called: \(value)&quot;)
   }
 
   //////////////////////////////////////////////////////////////////////
@@ -248,7 +244,7 @@ class Monster {
   //
   // 声明类方法可以用 static 或 class，用 static 声明时子类不能重写
   class func classMethod() {
-    print("class method called")
+    print(&quot;class method called&quot;)
   }
 }
 
@@ -258,7 +254,7 @@ class Zombie: Monster {
   //
   // 重写父类的实例方法
   override func instanceMethod(value: Int) {
-    print("override instance method called: \(value)")
+    print(&quot;override instance method called: \(value)&quot;)
   }
 
   //////////////////////////////////////////////////////////////////////
@@ -266,29 +262,33 @@ class Zombie: Monster {
   //
   // 重写父类的类方法
   override class func classMethod() {
-    print("override class method called")
+    print(&quot;override class method called&quot;)
   }
-}
-~~~
-
-## 下标
-
-  * 可以设定为只读或读写，类似于计算属性；
-  * 可以定义在枚举、结构体和类中，是访问集合、列表和序列的快捷方式；
-  * 可以接受任意数量的入参，入参可以是任意类型，返回值也可以是任意类型；
-  * 可以使用变量参数和可变参数，但不能使用 inout 参数，也不能给参数设置默认值；
-
-~~~
-class TimesTable {
+}</code></pre>
+<h2>下标</h2>
+<ul>
+<li>可以设定为只读或读写，类似于计算属性；</li>
+<li>可以定义在枚举、结构体和类中，是访问集合、列表和序列的快捷方式；</li>
+<li>可以接受任意数量的入参，入参可以是任意类型，返回值也可以是任意类型；</li>
+<li>可以使用变量参数和可变参数，但不能使用 inout 参数，也不能给参数设置默认值；</li>
+</ul>
+<pre><code>class TimesTable {
   var multiplier: Int
-  subscript(index: Int) -> Int {
+  subscript(index: Int) -&gt; Int {
     return (index * multiplier)
   }
-  subscript(index: String) -> String {
+  subscript(index: String) -&gt; String {
     return (index + index)
   }
 }
 var va = TimesTable(multiplier: 3)
 print(va[2]) // 6
-print(va["asdf"]) // asdfasdf
-~~~
+print(va[&quot;asdf&quot;]) // asdfasdf</code></pre>
+</div>
+</div>
+</div>
+<footer>
+<p>Designed by <a href="mailto:kvmisc@163.com">Kevin Wu</a></p>
+</footer>
+</body>
+</html>

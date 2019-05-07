@@ -1,0 +1,174 @@
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="description" content="kevin's blog for some private ideas.">
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" type="text/css" media="screen" href="/main.css">
+<title>《Swift 编程权威指南》笔记（四）：枚举 - 凯文的博客</title>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+   })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+   ga('create', 'UA-82919702-1', 'auto');
+   ga('send', 'pageview');
+</script>
+</head>
+<body>
+<header>
+<h1 id="site_title"><a href="/">凯文的博客</a></h1>
+</header>
+<div id="page_body">
+<div class="page_body_entry">
+<div class="post_title"><h1>《Swift 编程权威指南》笔记（四）：枚举</h1></div>
+<div class="post_info">Kevin Wu · 2018/05/29 · swift</div>
+<div class="post_body">
+<h2>基本用法</h2>
+<pre><code>// 声明枚举
+enum TextAlignment {
+  case left
+  case center
+  case right
+}
+
+// 使用枚举
+var va: TextAlignment = TextAlignment.center
+var vb: TextAlignment = .center
+var vc = TextAlignment.center
+var vd = .center // 编译错误，推断不出类型
+
+va = .left // va 已经确定为某个枚举类型，重新赋值时可以省略枚举名
+
+// 比较枚举
+if va == .right {
+  print(&quot;right&quot;)
+}
+
+// switch 枚举
+switch va {
+case .left:
+  print(&quot;left&quot;)
+case .center:
+  print(&quot;center&quot;)
+case .right:
+  print(&quot;right&quot;)
+}
+
+// 遍历枚举
+enum TextAlignment: CaseIterable {
+  case left
+  case center
+  case right
+}
+print(TextAlignment.allCases)</code></pre>
+<h2>关联值</h2>
+<pre><code>// 不指定名字
+enum Barcode {
+  case upc(Int, Int, Int, Int)
+  case qrcode(String)
+}
+var va = Barcode.upc(8, 85909, 51226, 3)
+var vb = Barcode.qrcode(&quot;ABCDEFGHIJKLMNOPQRSTUVWXYZ&quot;)
+
+switch va {
+case .upc(let numberSystem, let manufacturer, let product, let check):
+  print(&quot;UPC: \(numberSystem) \(manufacturer) \(product) \(check)&quot;)
+case .qrcode(var productCode):
+  print(&quot;QR Code: \(productCode)&quot;)
+}
+
+// 指定名字
+enum Shape {
+  case square(side: Double)
+  case rectangle(width: Double, height: Double)
+  case point
+}
+
+var va = Shape.square(side: 10)
+var vb = Shape.rectangle(width: 10, height: 20)
+var vc = Shape.point</code></pre>
+<h2>原始值</h2>
+<pre><code>// 原始值的类型可以是字符串、字符、整数或浮点数
+// 当原始值类型是整数或字符串时，不需要显式给每个成员赋值，
+// 整数原始值默认从 0 开始，字符串原始值默认是成员的名字
+
+// 默认原始值
+enum TextAlignment: Int {
+  case left
+  case center
+  case right
+}
+print(va.rawValue) // 1
+print(TextAlignment.right.rawValue) // 2
+
+// 指定原始值
+enum TextAlignment: Int {
+  case left = 10
+  case center = 11
+  case right = 12
+}
+print(va.rawValue) // 11
+print(TextAlignment.right.rawValue) // 12
+
+// 原始值转枚举
+var va = 11
+
+var vb = TextAlignment(rawValue: va)
+print(vb) // Optional(TestSwift.TextAlignment.center)
+
+if var vc = TextAlignment(rawValue: va) {
+  print(vc) // center
+}</code></pre>
+<h2>递归枚举</h2>
+<pre><code>indirect enum FamilyTree {
+  case noKnownParents
+  case oneKnownParent(name: String, ancestors: FamilyTree)
+  case twoKnownParents(fatherName: String, fatherAncestors: FamilyTree,
+                      motherName: String, motherAncestors: FamilyTree)
+}
+var va = FamilyTree.twoKnownParents(fatherName: &quot;Fred Sr.&quot;,
+                                    fatherAncestors: .oneKnownParent(name: &quot;Beth&quot;, ancestors: .noKnownParents),
+                                    motherName: &quot;Marsha&quot;,
+                                    motherAncestors: .noKnownParents)</code></pre>
+<h2>方法</h2>
+<pre><code>enum TextAlignment {
+  case left
+  case center
+  case right
+
+  func intValue() -&gt; Int {
+    switch self {
+    case .left:
+      return 10
+    case .center:
+      return 11
+    case .right:
+      return 12
+    }
+  }
+
+  mutating func toNext() { // 枚举是值类型，值类型的方法不能修改 self，如果希望值类型的方法能修改 self，要标记此方法为 mutating
+    switch self {
+    case .left:
+      self = .center
+    case .center:
+      self = .right
+    case .right:
+      self = .left
+    }
+  }
+}
+
+var va = TextAlignment.right
+print(va.intValue()) // 12
+va.toNext()
+print(va.intValue()) // 10</code></pre>
+</div>
+</div>
+</div>
+<footer>
+<p>Designed by <a href="mailto:kvmisc@163.com">Kevin Wu</a></p>
+</footer>
+</body>
+</html>

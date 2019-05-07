@@ -1,36 +1,37 @@
 ---
 title: "《Swift 编程权威指南》笔记（一）：语言基础"
 author: "Kevin Wu"
-date: "2017/05/20"
+date: "2018/05/20"
 category: ["swift"]
 ---
 
 
 ## 变量和常量
 
+全局或局部存储变量为特定类型的值提供存储空间，并允许读取和写入，存储变量能定义观察者。另外，在全局和局部范围内还可以定义计算变量，计算变量返回一个计算结果而不存储值。
+
+全局的变量和常量都是惰性的，但不需要标记为 lazy。局部范围的变量和常量从不延迟计算。
+
 ~~~
-// 变量
+// 全局或局部存储变量
 var va = 5, vb = 5.0, vc = "111"
-// 常量
+// 全局或局部存储常量
 let vd = 5
 
-// 观察全局变量
-var ga = 0 {
-  willSet { print("Global WillSet: \(newValue)") }
-  didSet { print("Global DidSet: \(oldValue)") }
+// 全局或局部计算变量
+var va: Int {
+  return (2 * 2)
 }
-ga = 1
-ga = 2
+print("va: \(va)")
 
-// 观察本地变量
-func fa() {
-  var la = 0 {
-    willSet { print("Local WillSet: \(newValue)") }
-    didSet { print("Local DidSet: \(oldValue)") }
-  }
-  la = 1
-  la = 2
+
+// 观察全局或局部存储变量
+var va = 0 {
+  willSet { print("WillSet: \(newValue)") }
+  didSet { print("DidSet: \(oldValue)") }
 }
+va = 1
+va = 2
 ~~~
 
 ## 运算符

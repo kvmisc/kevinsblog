@@ -48,19 +48,17 @@ let vb = Cls()
 vb.value = 101
 ~~~
 
-## 初始化
+## 构造和析构
 
+### 结构体构造
 ~~~
-//////////////////////////////////////////////////////////////////////
-// 结构体初始化
-//
-// 编译器提供的初始化方法
+// 编译器提供的构造器
 struct Town {
   var population: Int
   var stoplights: Int = 0
 }
-// 默认初始化方法，如果结构体的每个存储属性都有默认值，可以用结构体的默认初始化方法
-var va = Town() // 编译错误，population 没有默认值，不能用默初始化方法
+// 默认构造器，如果结构体的每个存储属性都有默认值，可以用结构体的默认构造器
+var va = Town() // 编译错误，population 没有默认值，不能用默认构造器
 // 默认成员初始化方法
 var vb = Town(population: 0) // 编译错误，虽然 stoplights 有默认值，也要传
 var vc = Town(stoplights: 0, population: 0) // 编译错误，顺序也不能乱
@@ -71,9 +69,11 @@ struct Town {
   var population: Int
   var stoplights: Int
   let region: String
+  // 为存储属性分配默认值或在初始化方法中赋值时，属性观察者并不会触发
   init(region: String, population: Int, stoplights: Int) { // 参数名称可以随意命名；顺序可以随意排；
     self.population = population
     self.stoplights = stoplights
+    // 常量属性只能在定义它的类初始化方法中修改，不能在子类中修改
     self.region = region
   }
   init(population: Int, stoplights: Int) {
@@ -84,10 +84,28 @@ var va = Town(population: 0, stoplights: 0, region: "") // 编译错误，编译
 var vb = Town(region: "", population: 0, stoplights: 0)
 vb.region = "South" // 编译出错，region 是常量
 var vc = Town(population: 0, stoplights: 0)
+~~~
 
-//////////////////////////////////////////////////////////////////////
-// 类初始化
-//
+### 类构造
+
+类初始化过程分为两个阶段：
+
+  1. 类中的每个存储属性都赋初始值，主要内容是给本类属性赋值并调用父类初始化方法为父类属性赋值；
+  2. 在实例准备使用之前进一步自定义存储属性的值，主要内容是修改父类初始化方法设置的值。
+
+为了确保两段式初始化过程不出错地完成，编译器要做四项检查，以下哪条没达到都会编译错误：
+
+  * 检查一：自己初始化必须在父类初始化之前
+  * 检查二：父类初始化必须在修改父类属性前
+  * 检查三：便利初始化方法必须先调用其它初始化方法，再修改属性
+  * 检查四：初始化方法在第一阶段完成前不能调用实例方法，不能访问属性
+
+默认情况下，子类不会继承父类的初始化方法。当为子类引入的所有新属性都提供了默认值，父类的初始化方法可以被自动继承，规则如下：
+
+  * 规则一：如果子类没有定义指定初始化方法，它将自动继承父类所有的初始化方法；
+  * 规则二：如果子类提供了父类所有指定初始化方法的自定义实现，它将继承父类所有的便利初始化方法。
+
+~~~
 // 编译器提供的初始化方法
 class Monster {
   var population: Int = 0
@@ -99,6 +117,111 @@ class Monster {
 // 当类的部分存储属性没有默认值，且没有提供自定义初始化方法的时候，编译错误
 var va = Monster()
 // 类没有默认成员初始化方法
+
+// 自定义初始化方法
+class Monster {
+  var population: Int = 0
+  var stoplights: Int = 0
+  var computedProperty: Int { return 5 }
+
+  //////////////////////////////////////////////////////////////////////
+  // 指定初始化方法，必须调用直接父类的指定初始化方法
+  // TODO: 指定初始化方法内部好像不能调用其它指定初始化方法，为什么？
+  init(population: Int, stoplights: Int) {
+    self.population = population
+    self.stoplights = stoplights
+  }
+  init(population: Int) {
+    self.population = population
+    self.stoplights = 0
+  }
+
+  //////////////////////////////////////////////////////////////////////
+  // 便利初始化方法
+  // 必须调用同类的其它指定或便利初始化方法，但最终结果必须调用指定初始化方法
+  // 不能调用父类的任何初始化方法
+  convenience init(fooValue: Int) {
+    // 直接调用指定初始化方法
+    self.init(population: fooValue+1, stoplights: fooValue-1)
+  }
+  convenience init(barValue: Int) {
+    // 间接调用指定初始化方法，这里调用便利初始化方法，便利初始化方法中调用指定初始化方法
+    self.init(fooValue: barValue)
+  }
+
+  //////////////////////////////////////////////////////////////////////
+  // 可失败初始化方法，不能与非可失败初始化方法拥有相同参数名和参数类型
+  init?(value: Int) {
+    if value < 0 { return nil }
+    self.population = value + 1
+    self.stoplights = value - 1
+  }
+
+  //////////////////////////////////////////////////////////////////////
+  // 必要初始化方法
+  required init(foobar: Int) {
+    self.population = foobar+1
+    self.stoplights = foobar-1
+  }
+}
+
+class Zombie: Monster {
+  let region: String
+  //////////////////////////////////////////////////////////////////////
+  // 指定初始化方法
+  init(region: String, population: Int, stoplights: Int) {
+    // 阶段一
+    // 必须先初始化自己，再去调用父类的指定初始化方法
+    self.region = region
+    // 编译错误，在父类指定初始化方法被调用之前，不能修改父类的属性，此时父类是未初始化状态
+    self.population = 0
+    // 调用父类的指定初始化方法
+    super.init(population: population, stoplights: stoplights)
+
+    // 阶段二
+    // 父类已经初始化完成，此时可以修改父类设置的值
+    self.population = 0
+  }
+  // 重写父类指定初始化方法
+  override init(population: Int, stoplights: Int) {
+    self.region = "N/A"
+    super.init(population: population, stoplights: stoplights)
+  }
+  override init(population: Int) {
+    self.region = "N/A"
+    super.init(population: population)
+  }
+
+  //////////////////////////////////////////////////////////////////////
+  // 便利初始化方法，虽然与父类便利初始化方法匹配，但子类不能调用父类便利初始化方法，这里并不是重写
+  convenience init(fooValue: Int) {
+    self.init(population: fooValue+1, stoplights: fooValue-1)
+  }
+
+  //////////////////////////////////////////////////////////////////////
+  // 可失败初始化方法
+  // 可以在子类中重写父类的可失败初始化方法，可以重写为可失败或非可失败
+  override init(value: Int) {
+    self.region = "N/A"
+    var tmpValue = value
+    if value < 0 { tmpValue = 0 }
+    super.init(value: tmpValue)!
+  }
+
+  //////////////////////////////////////////////////////////////////////
+  // 重写父类必要初始化方法
+  required init(foobar: Int) {
+    self.region = "N/A"
+    super.init(foobar: foobar)
+  }
+}
+~~~
+
+### 类析构
+
+析构只适用于类，每个类最多只能有一个板构器
+
+~~~
 ~~~
 
 ## 属性
@@ -115,6 +238,7 @@ class Monster {
   // 未初始化的惰性存储属性被多线程同时访问时，无法保证其只被初始化一次
   // 1)使用闭包根据实例当前的情况计算并返回初始化值
   //   末尾的圆括号确保第一次访问此属性时调用闭包并将结果赋给属性，如果省略了圆括号，表示把闭包赋给属性
+  //   如果创建的是非惰性存储属性，闭包里面不能访问 self，因为实例并未初始化完成
   lazy var lazyProperty1: Int = { return (self.storedProperty * 2) }()
   // 2)创建某个实例并赋值
   lazy var lazyProperty2: Array<String> = []

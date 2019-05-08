@@ -59,28 +59,28 @@ struct Town {
 }
 // 默认构造器，如果结构体的每个存储属性都有默认值，可以用结构体的默认构造器
 var va = Town() // 编译错误，population 没有默认值，不能用默认构造器
-// 默认成员初始化方法
+// 默认成员构造器
 var vb = Town(population: 0) // 编译错误，虽然 stoplights 有默认值，也要传
 var vc = Town(stoplights: 0, population: 0) // 编译错误，顺序也不能乱
 var vd = Town(population: 0, stoplights: 0)
 
-// 自定义初始化方法，如果提供自定义初始化方法，编译器就不再提供初始化方法
+// 自定义构造器，如果提供自定义构造器，编译器就不再提供构造器
 struct Town {
   var population: Int
   var stoplights: Int
   let region: String
-  // 为存储属性分配默认值或在初始化方法中赋值时，属性观察者并不会触发
+  // 为存储属性分配默认值或在构造器中赋值时，属性观察者并不会触发
   init(region: String, population: Int, stoplights: Int) { // 参数名称可以随意命名；顺序可以随意排；
     self.population = population
     self.stoplights = stoplights
-    // 常量属性只能在定义它的类初始化方法中修改，不能在子类中修改
+    // 常量属性只能在定义它的类构造器中修改，不能在子类中修改
     self.region = region
   }
   init(population: Int, stoplights: Int) {
     self.init(region: "N/A", population: population, stoplights: stoplights)
   }
 }
-var va = Town(population: 0, stoplights: 0, region: "") // 编译错误，编译器提供的初始化方法已经不存在了
+var va = Town(population: 0, stoplights: 0, region: "") // 编译错误，编译器提供的构造器已经不存在了
 var vb = Town(region: "", population: 0, stoplights: 0)
 vb.region = "South" // 编译出错，region 是常量
 var vc = Town(population: 0, stoplights: 0)
@@ -90,43 +90,43 @@ var vc = Town(population: 0, stoplights: 0)
 
 类初始化过程分为两个阶段：
 
-  1. 类中的每个存储属性都赋初始值，主要内容是给本类属性赋值并调用父类初始化方法为父类属性赋值；
-  2. 在实例准备使用之前进一步自定义存储属性的值，主要内容是修改父类初始化方法设置的值。
+  1. 类中的每个存储属性都赋初始值，主要内容是给本类属性赋值并调用父类构造器为父类属性赋值；
+  2. 在实例准备使用之前进一步自定义存储属性的值，主要内容是修改父类构造器设置的值。
 
 为了确保两段式初始化过程不出错地完成，编译器要做四项检查，以下哪条没达到都会编译错误：
 
   * 检查一：自己初始化必须在父类初始化之前
   * 检查二：父类初始化必须在修改父类属性前
-  * 检查三：便利初始化方法必须先调用其它初始化方法，再修改属性
-  * 检查四：初始化方法在第一阶段完成前不能调用实例方法，不能访问属性
+  * 检查三：便利构造器必须先调用其它构造器，再修改属性
+  * 检查四：构造器在第一阶段完成前不能调用实例方法，不能访问属性
 
-默认情况下，子类不会继承父类的初始化方法。当为子类引入的所有新属性都提供了默认值，父类的初始化方法可以被自动继承，规则如下：
+默认情况下，子类不会继承父类的构造器。当为子类引入的所有新属性都提供了默认值，父类的构造器可以被自动继承，规则如下：
 
-  * 规则一：如果子类没有定义指定初始化方法，它将自动继承父类所有的初始化方法；
-  * 规则二：如果子类提供了父类所有指定初始化方法的自定义实现，它将继承父类所有的便利初始化方法。
+  * 规则一：如果子类没有定义指定构造器，它将自动继承父类所有的构造器；
+  * 规则二：如果子类提供了父类所有指定构造器的自定义实现，它将继承父类所有的便利构造器。
 
 ~~~
-// 编译器提供的初始化方法
+// 编译器提供的构造器
 class Monster {
   var population: Int = 0
   var stoplights: Int = 0
   var computedProperty: Int { return 5 }
 }
-// 默认初始化方法
+// 默认构造器
 // 当类的所有存储属性都有默认值的时候，可以调用这个方法
-// 当类的部分存储属性没有默认值，且没有提供自定义初始化方法的时候，编译错误
+// 当类的部分存储属性没有默认值，且没有提供自定义构造器的时候，编译错误
 var va = Monster()
-// 类没有默认成员初始化方法
+// 类没有默认成员构造器
 
-// 自定义初始化方法
+// 自定义构造器
 class Monster {
   var population: Int = 0
   var stoplights: Int = 0
   var computedProperty: Int { return 5 }
 
   //////////////////////////////////////////////////////////////////////
-  // 指定初始化方法，必须调用直接父类的指定初始化方法
-  // TODO: 指定初始化方法内部好像不能调用其它指定初始化方法，为什么？
+  // 指定构造器，必须调用直接父类的指定构造器
+  // TODO: 指定构造器内部好像不能调用其它指定构造器，为什么？
   init(population: Int, stoplights: Int) {
     self.population = population
     self.stoplights = stoplights
@@ -137,20 +137,20 @@ class Monster {
   }
 
   //////////////////////////////////////////////////////////////////////
-  // 便利初始化方法
-  // 必须调用同类的其它指定或便利初始化方法，但最终结果必须调用指定初始化方法
-  // 不能调用父类的任何初始化方法
+  // 便利构造器
+  // 必须调用同类的其它指定或便利构造器，但最终结果必须调用指定构造器
+  // 不能调用父类的任何构造器
   convenience init(fooValue: Int) {
-    // 直接调用指定初始化方法
+    // 直接调用指定构造器
     self.init(population: fooValue+1, stoplights: fooValue-1)
   }
   convenience init(barValue: Int) {
-    // 间接调用指定初始化方法，这里调用便利初始化方法，便利初始化方法中调用指定初始化方法
+    // 间接调用指定构造器，这里调用便利构造器，便利构造器中调用指定构造器
     self.init(fooValue: barValue)
   }
 
   //////////////////////////////////////////////////////////////////////
-  // 可失败初始化方法，不能与非可失败初始化方法拥有相同参数名和参数类型
+  // 可失败构造器，不能与非可失败构造器拥有相同参数名和参数类型
   init?(value: Int) {
     if value < 0 { return nil }
     self.population = value + 1
@@ -158,7 +158,7 @@ class Monster {
   }
 
   //////////////////////////////////////////////////////////////////////
-  // 必要初始化方法
+  // 必要构造器
   required init(foobar: Int) {
     self.population = foobar+1
     self.stoplights = foobar-1
@@ -168,21 +168,21 @@ class Monster {
 class Zombie: Monster {
   let region: String
   //////////////////////////////////////////////////////////////////////
-  // 指定初始化方法
+  // 指定构造器
   init(region: String, population: Int, stoplights: Int) {
     // 阶段一
-    // 必须先初始化自己，再去调用父类的指定初始化方法
+    // 必须先初始化自己，再去调用父类的指定构造器
     self.region = region
-    // 编译错误，在父类指定初始化方法被调用之前，不能修改父类的属性，此时父类是未初始化状态
+    // 编译错误，在父类指定构造器被调用之前，不能修改父类的属性，此时父类是未初始化状态
     self.population = 0
-    // 调用父类的指定初始化方法
+    // 调用父类的指定构造器
     super.init(population: population, stoplights: stoplights)
 
     // 阶段二
-    // 父类已经初始化完成，此时可以修改父类设置的值
+    // 父类已初始化完成，此时可以修改父类设置的值
     self.population = 0
   }
-  // 重写父类指定初始化方法
+  // 重写父类指定构造器
   override init(population: Int, stoplights: Int) {
     self.region = "N/A"
     super.init(population: population, stoplights: stoplights)
@@ -193,14 +193,14 @@ class Zombie: Monster {
   }
 
   //////////////////////////////////////////////////////////////////////
-  // 便利初始化方法，虽然与父类便利初始化方法匹配，但子类不能调用父类便利初始化方法，这里并不是重写
+  // 便利构造器，虽然与父类便利构造器匹配，但子类不能调用父类便利构造器，这里并不是重写
   convenience init(fooValue: Int) {
     self.init(population: fooValue+1, stoplights: fooValue-1)
   }
 
   //////////////////////////////////////////////////////////////////////
-  // 可失败初始化方法
-  // 可以在子类中重写父类的可失败初始化方法，可以重写为可失败或非可失败
+  // 可失败构造器
+  // 可以在子类中重写父类的可失败构造器，可以重写为可失败或非可失败
   override init(value: Int) {
     self.region = "N/A"
     var tmpValue = value
@@ -209,7 +209,7 @@ class Zombie: Monster {
   }
 
   //////////////////////////////////////////////////////////////////////
-  // 重写父类必要初始化方法
+  // 重写父类必要构造器
   required init(foobar: Int) {
     self.region = "N/A"
     super.init(foobar: foobar)
@@ -263,7 +263,7 @@ class Monster {
   // 类属性
 
   // 存储类属性，可以是变量或常量
-  // 必须有默认值，因为没有初始化方法来初始化
+  // 必须有默认值，因为没有构造器来初始化
   // 是惰性的，未初始化存储类属性被多线程同时访问也只初始化一次
   static var classStoredProperty = "class stored property"
 

@@ -219,9 +219,20 @@ class Zombie: Monster {
 
 ### 类析构
 
-析构只适用于类，每个类最多只能有一个板构器
+析构只适用于类，每个类最多只能有一个板构器，析构器不带圆括号和任何参数。析构器是在实例释放前被自动调用，不能主动调用析构器。因为析构器被调用后实例才会被释放，所以析构器可以访问实例的所有属性。
 
 ~~~
+class Monster {
+  deinit {
+    print("deinit monster")
+  }
+}
+
+class Zombie: Monster {
+  deinit {
+    print("deinit zombie")
+  }
+}
 ~~~
 
 ## 属性

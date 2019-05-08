@@ -70,8 +70,9 @@ var vd: String = vc
 print(vd) // 333
 
 // 可空链式调用是一种可以调用属性、方法和下标的过程
+// 就算方法被定义为返回非可空类型，如果在有值的可空变量上被调用，返回的也是可空类型
 var va: String?
-var vb = va?.uppercased() // va 末尾的问号表明这行代码开始了可空链式调用过程
+var vb = va?.uppercased()
 print(vb) // nil
 
 // nil 合并运算符

@@ -1,5 +1,5 @@
 ---
-title: "《Swift 编程权威指南》笔记（五）：结构体和类"
+title: "Swift 笔记（五）：结构体和类"
 author: "Kevin Wu"
 date: "2018/06/02"
 category: ["swift"]

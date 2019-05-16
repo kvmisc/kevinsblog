@@ -1,5 +1,5 @@
 ---
-title: "《Swift 编程权威指南》笔记（四）：枚举"
+title: "Swift 笔记（四）：枚举"
 author: "Kevin Wu"
 date: "2018/05/29"
 category: ["swift"]

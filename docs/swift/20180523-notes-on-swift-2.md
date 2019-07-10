@@ -100,115 +100,18 @@ print(va == vd) // false
 ## 集合
 
 ~~~
-// 当元素顺序不重要或者希望每个元素只出现一次，可以使用集合
-// 能存在集合的类型都必须是可哈希的，即该类型必须提供一个方法来计算它的哈希值
-// 所有基本类型（String、Int、Double 和 Bool）都是可哈希的，没有关联值的枚举成员值也是可哈希的
-
-// 创建集合
-var va: Set<String> = []
-var vb: Set<String> = Set()
-var vc = Set<String>()
-var vd = Set() // 编译错误，推断不出类型
-
-var ve: Set<String> = ["111", "222", "333"] // 如果不写类型，会被推断为字符串数组
-var vf: Set = ["111", "222", "333"] // 虽然不能推断出集合，但能推断出集合中的元素是字符串
-
 // 统计元素
 print(va.count) // 3
 print(va.isEmpty) // false
 
-// 访问元素
-
-// 修改元素
-
-// 添加元素
-va.insert("444") // ["111", "222", "333", "444"]
-
-// 删除元素
-var vb = va.remove("222") // ["111", "333"]
-print(vb) // Optional("222")
-
-// 遍历元素
-for item in va {
-  print(item)
-}
-for item in va.sorted() {
-  print(item)
-}
-
-// 集合操作
-// 并集
-var vc = va.union(vb) // ["111", "222", "333", "444"]
-// 交集
-var vc = va.intersection(vb) // ["333"]
-// 补集，A-交集
-var vc = va.subtracting(vb) // ["111", "222"]
-// 对称差，A+B-交集
-var vc = va.symmetricDifference(vb) // ["111", "222", "444"]
-
-// 集合关系
-// 相等
-print(va == vb)
-// 是否子集
-print(va.isSubset(of: vb))
-// 是否子集且不相等
-print(va.isStrictSubset(of: vb))
-// 是否包含
-print(va.isSuperset(of: vb))
-// 是否包含且不相等
-print(va.isStrictSuperset(of: vb))
-// 不相交，没有相同的值
-print(va.isDisjoint(with: vb))
 ~~~
 
 ## 字典
 
 ~~~
-// 创建字典
-var va: Dictionary<String, String> = [:]
-var vb: Dictionary<String, String> = Dictionary()
-var vc = Dictionary<String, String>()
-var vd = Dictionary() // 编译错误，推断不出类型
-
-var ve: [String:String] = [:]
-var vf = [String:String]()
-
-var vg = ["1":"111", "2":"222", "3":"333"]
-print(vg) // ["1":"111", "2":"222", "3":"333"]
-
 // 统计元素
 print(va.count)
 print(va.isEmpty)
 
-// 访问元素，返回的是可空类型
-print(va["2"]) // Optional("222")
 
-// TODO: 为何能替换却不能修改字典某个元素的值？
-// 修改元素
-va["2"] += "asdf" // 编译错误
-// 替换元素
-va["2"] = "asdf" // ["1":"111", "2":"asdf", "3":"333"]
-// 调用方法替换
-var vb = va.updateValue("asdf", forKey: "3") // ["1":"111", "2":"asdf", "3":"asdf"]
-print(vb) // Optional("333")
-
-// 添加元素
-va["4"] = "444" // ["1":"111", "2":"222", "3":"333", "4": "444"]
-// 调用方法添加
-var vb = va.updateValue("444", forKey: "4") // ["1":"111", "2":"asdf", "3":"333", "4": "444"]
-print(vb) // Optional("444")
-
-// 删除元素
-va["2"] = nil // ["1": "111", "3": "333"]
-// 调用方法删除
-var vb = va.removeValue(forKey: "3") // ["1": "111"]
-print(vb) // Optional("333")
-
-// 遍历字典
-for (key, value) in va { // 遍历键值
-  print("\(key)=\(value)")
-}
-for key in va.keys { // 遍历键
-  print(key)
-}
 ~~~

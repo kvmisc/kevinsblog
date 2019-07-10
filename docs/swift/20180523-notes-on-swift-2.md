@@ -88,55 +88,9 @@ var (_, info) = va // 如果只想提取 info，可用下划线代替 code
 ## 数组
 
 ~~~
-// 创建数组
-var va: Array<String> = []
-var vb: Array<String> = Array()
-var vc = Array<String>()
-var vd = Array() // 编译错误，推断不出类型
-
-var ve: [String] = []
-var vf = [String]()
-
-var vg = [111, 111, 111] // 可以包含重复的值
-
-var vh = ["111", "222", 333] // 编译错误
-
 // 统计元素
 print(va.count) // 3
 print(va.isEmpty) // false
-
-// 访问元素
-print(va[0]) // 111
-print(va[1...2]) // ["222", "333"]
-print(va[10]) // 运行时崩溃
-
-// 修改元素
-va[1] += "asdf" // ["111", "222asdf", "333"]
-// 替换元素
-va[1] = "asdf" // ["111", "asdf", "333"]
-// 替换多个元素
-var[1...2] = ["444"] // ["111", "444"]
-
-// 添加元素
-va.append("444") // ["111", "222", "333", "444"]
-va.append("555") // ["111", "222", "333", "444", "555"]
-// 插入元素
-va.insert("666", at: 1) // ["111", "666", "222", "333", "444", "555"]
-// 追加数组
-var vb = ["777", "888"]
-va += vb  // ["111", "666", "222", "333", "444", "555", "777", "888"]
-
-// 删除元素
-var vb = va.remove(at: 0) // ["222", "333"]
-print(vb) // 111
-
-// 遍历元素
-for item in va {
-  print(item)
-}
-for (index, item) in va.enumerated() {
-  print("\(index): \(item)")
-}
 
 // 判断相等，相同位置元素相等的数组才算相等
 var vd = ["111", "333", "222"]

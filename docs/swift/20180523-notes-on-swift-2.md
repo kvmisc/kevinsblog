@@ -87,31 +87,9 @@ var (_, info) = va // 如果只想提取 info，可用下划线代替 code
 
 ## 数组
 
-~~~
-// 统计元素
-print(va.count) // 3
-print(va.isEmpty) // false
-
-// 判断相等，相同位置元素相等的数组才算相等
-var vd = ["111", "333", "222"]
-print(va == vd) // false
-~~~
 
 ## 集合
 
-~~~
-// 统计元素
-print(va.count) // 3
-print(va.isEmpty) // false
-
-~~~
 
 ## 字典
 
-~~~
-// 统计元素
-print(va.count)
-print(va.isEmpty)
-
-
-~~~

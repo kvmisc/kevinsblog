@@ -10,62 +10,12 @@ category: ["swift"]
 
 ### 函数参数
 
-~~~
-
-// inout 参数
-// 只能传变量给 inout 参数，不能传常量和字面量
-// inout 参数不能有默认值
-// 可变参数不能标记为 inout
-func fh(name: String, error: inout String) {
-  print("name: \(name)")
-  error = "error occurred"
-}
-var err = ""
-fh(name: "tony", error: &err)
-print(err)
-
-// 函数参数
-func fi(budget: Int, condition: (Int) -> Bool) {
-  if condition(budget) {
-    print("111")
-  } else {
-    print("222")
-  }
-}
-func fj(value: Int) -> Bool {
-  return (value>10)
-}
-fi(budget: 8, condition: fj)
-~~~
-
 ### 函数返回值
-
-~~~
-// 返回函数
-func fc() -> (Int, Int) -> Int {
-  func fd(a: Int, b: Int) -> Int {
-    return (a+b)
-  }
-  return fd
-}
-var result: (Int, Int) -> Int = fc()
-var value = result(1, 2)
-print(value) // 3
-~~~
 
 ### 嵌套函数
 
-~~~
-func fa() -> Int {
-  var number = 3
-  func fb() -> Int {
-    return number * 2
-  }
-  return fb()
-}
-var result = fa()
-print(result)
-~~~
+
+
 
 ## 闭包
 

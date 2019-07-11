@@ -11,47 +11,6 @@ category: ["swift"]
 ### 函数参数
 
 ~~~
-// 无参数
-func fa() {
-  print("111")
-}
-fa()
-
-// 有参数
-func fb(name: String) {
-  print("name: \(name)")
-}
-fb(name: "tony")
-
-// label 参数
-// 每个函数参数都有一个参数标签和参数名称，参数标签在调用函数的时候使用，参数名称在函数实现中使用
-func fc(label name: String) { // 显式指定参数标签
-  print("name: \(name)")
-}
-func fd(_ name: String) { // 忽略参数标签，调用的时候没有参数标签
-  print("name: \(name)")
-}
-func fe(name: String) { // 未指定参数标签，默认将参数名称作为参数标签
-  print("name: \(name)")
-}
-fc(label: "tony")
-fd("tony")
-fe(name: "tony")
-
-// 默认参数
-func ff(name: String = "Unknown") {
-  print("name: \(name)")
-}
-ff()
-ff(name: "tony")
-
-// 可变参数
-func fg(names: String...) {
-  for name in names {
-    print(name)
-  }
-}
-fg(names: "tony", "bill")
 
 // inout 参数
 // 只能传变量给 inout 参数，不能传常量和字面量
@@ -82,20 +41,6 @@ fi(budget: 8, condition: fj)
 ### 函数返回值
 
 ~~~
-// 返回元组
-func fa() -> (ta: Int, tb: String) {
-  return (404, "Not Found")
-}
-var result = fa()
-print("(\(result.ta), \(result.tb))") // (404, Not Found)
-
-// 返回可空类型
-func fb() -> String? {
-  return "blah blah"
-}
-var result = fb()
-print(result) // Optional("blah blah")
-
 // 返回函数
 func fc() -> (Int, Int) -> Int {
   func fd(a: Int, b: Int) -> Int {

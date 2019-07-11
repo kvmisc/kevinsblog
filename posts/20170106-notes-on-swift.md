@@ -33,3 +33,29 @@ names.sorted(by: < )
 // 尾随闭包
 names.sorted { $0<$1 }
 ~~~
+
+## 值捕获
+
+~~~
+func makeIncrementer(increment: Int) -> ()->Int {
+  var runningTotal = 0
+
+  func incrementer() -> Int {
+    runningTotal += increment
+    return runningTotal
+  }
+
+  return incrementer
+}
+////////////////////////////////////////
+let incrementByOne = makeIncrementer(increment: 1)
+print(incrementByOne())
+print(incrementByOne())
+
+let incrementByTen = makeIncrementer(increment: 10)
+print(incrementByTen())
+print(incrementByTen())
+
+print(incrementByOne())
+print(incrementByTen())
+~~~

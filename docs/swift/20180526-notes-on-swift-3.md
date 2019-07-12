@@ -62,6 +62,7 @@ vc = ffc(2) // vc=203 total=203
 
 // 当闭包作为参数传到函数但调用却在函数返回之后时，我们称该闭包从函数中逃逸
 
+
 var CompletionHandlers: [() -> Void] = []
 
 func FunctionWithEscapingClosure(handler: @escaping () -> Void) {

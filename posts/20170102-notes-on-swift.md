@@ -12,20 +12,18 @@ category: ["swift"]
 
 ~~~
 // 遍历数组
-var ary = ["111", "222", "333"]
 for it in ary {
   print(it)
 }
 
 // 遍历字典
-var map = ["a": 1, "c": 3, "b": 2]
 for (key, value) in map {
   print("\(key)=\(value)")
 }
 
 // 遍历区间
-for index in 0..<5 {
-  print(index)
+for idx in 0..<5 {
+  print(idx)
 }
 ~~~
 

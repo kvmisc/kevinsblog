@@ -48,25 +48,6 @@ var d: Character = "\u{00E9}"           // é
 var e: Character = "\u{0065}\u{0301}"   // é
 ~~~
 
-## 连接字符串或字符
-
-~~~
-// 拼接字符串
-var a = "111"
-var b = "222"
-var c = a + b
-
-// 追加字符串
-var d = "333"
-d += "444"
-d.append("555")
-
-// 追加字符
-var e = "666"
-var f: Character = "7"
-e.append(f)
-~~~
-
 ## 字符串长度
 
 向字符串添加字符并不一定会改变字符串长度。
@@ -91,6 +72,25 @@ print(a[ a.startIndex ])                        // 0
 print(a[ a.index(after: a.startIndex) ])        // 1
 print(a[ a.index(before: a.endIndex) ])         // 9
 print(a[ a.index(a.startIndex, offsetBy: 3) ])  // 3
+~~~
+
+## 连接字符串或字符
+
+~~~
+// 拼接字符串
+var a = "111"
+var b = "222"
+var c = a + b
+
+// 追加字符串
+var d = "333"
+d += "444"
+d.append("555")
+
+// 追加字符
+var e = "666"
+var f: Character = "7"
+e.append(f)
 ~~~
 
 ## 插入和删除
@@ -120,7 +120,6 @@ var b = a[..<index]   // SubString
 
 var c = String(b)     // String
 ~~~
-
 
 ## 字符串比较
 

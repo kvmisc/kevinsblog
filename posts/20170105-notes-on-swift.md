@@ -22,8 +22,8 @@ foo(name: "bbb")  // 编译错误
 ### 参数默认值
 
 ~~~
-func foo(a:Int, b:Int=2, c:Int=3) {
-  print(a+b+c)
+func foo(a: Int, b: Int = 2, c: Int = 3) {
+  print(a + b + c)
 }
 ////////////////////////////////////////
 foo(a:1, b:2, c:3)
@@ -38,8 +38,8 @@ foo(a:1, c:3, b:2)  // 编译错误
 ~~~
 func average(_ numbers: Double...) -> Double {
   var total: Double = 0
-  for number in numbers {
-    total += number
+  for it in numbers {
+    total += it
   }
   return total / Double(numbers.count)
 }
@@ -68,7 +68,7 @@ func add(_ a: Int, _ b: Int) -> Int {
   return a+b
 }
 
-func perform(_ algorithm:(Int,Int)->Int, _ a:Int, _ b:Int) {
+func perform(_ algorithm: (Int,Int)->Int, _ a: Int, _ b: Int) {
   let result = algorithm(a, b)
   print("result is: \(result)")
 }
